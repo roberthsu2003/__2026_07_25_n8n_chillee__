@@ -58,6 +58,58 @@
       ],
       "id": "bbc8e7d0-3bb6-4384-9b4c-ac179d99c015",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8ccfcea5-2939-4c27-acfb-61367926e1e8",
+              "name": "json_example_string",
+              "value": "這是簡單的字串",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -224,
+        64
+      ],
+      "id": "41e60b8e-c1d6-42fe-b186-e11d912f7545",
+      "name": "字串資料類型"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "459e0058-acb2-438b-b1b8-4d7ce0dca3c8",
+              "name": "json_example_integer",
+              "value": 10,
+              "type": "number"
+            },
+            {
+              "id": "1a530de3-e65a-4704-a165-a38b79f04d67",
+              "name": "json_example_float",
+              "value": 12.5,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -16,
+        64
+      ],
+      "id": "c81b6418-699b-4ea2-8ba8-d1ee12fcd248",
+      "name": "數值資料類型"
     }
   ],
   "connections": {
@@ -66,6 +118,28 @@
         [
           {
             "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "字串資料類型",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "字串資料類型": {
+      "main": [
+        [
+          {
+            "node": "數值資料類型",
             "type": "main",
             "index": 0
           }
