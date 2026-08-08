@@ -2,49 +2,13 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 教學 - 什麼是 JSON？\n\n歡迎！本工作流程將教您 JSON 的基礎知識，JSON 是應用程式和 n8n 節點用來交換資訊的語言。\n\n[參考影片](https://youtu.be/PAmgrwYnzWs?si=OEoVkG7b2zED7jRC)\n\n**什麼是 JSON？ **\n\n想像一張聯絡人卡片：\n\n- **姓名：** John Doe\n\n- **年齡：** 30\n\n- **是否有子女：** 是\n\n- **電話號碼：** [\"555-1234\", \"555-5678\"]\n\nJSON 只是將這些資訊以電腦能夠完全理解的方式記錄下來。\n\n**如何使用本教學：**\n\n1. 點選**「執行工作流程」**按鈕。\n\n2. 按順序逐一點擊每個節點。\n\n3. 查看右側面板中節點的輸出，並閱讀相關的便箋以了解正在發生的事情。",
-        "height": 832,
-        "width": 460,
-        "color": "#46A076"
-      },
-      "id": "4bd3bc70-2a3a-4bd7-bf6d-8ac960159a93",
-      "cid": "Ikx1Y2FzIFBleXJpbiI",
-      "name": "Sticky Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "creator": "Lucas Peyrin",
-      "position": [
-        -960,
-        -576
-      ],
-      "typeVersion": 1,
-      "notes": "© 2025 Lucas Peyrin"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -736,
-        64
-      ],
-      "id": "823af300-42a5-4250-8b6a-7f922c2b9f46",
-      "name": "When clicking ‘Execute workflow’"
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "e0158ea6-5535-4cc9-8a33-e79720fa84e9",
-              "name": "key",
-              "value": "value",
-              "type": "string"
-            },
-            {
-              "id": "7d869853-e484-4f54-9619-783f408c5ba4",
-              "name": "another_key",
-              "value": "another_value",
-              "type": "string"
+              "id": "236ddc92-3834-4cde-8dfb-ff65b4fa042f",
+              "name": "json_example_boolean",
+              "value": true,
+              "type": "boolean"
             }
           ]
         },
@@ -53,21 +17,21 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        -432,
+        192,
         64
       ],
-      "id": "bbc8e7d0-3bb6-4384-9b4c-ac179d99c015",
-      "name": "Edit Fields"
+      "id": "02c1c146-9973-44e1-a646-10d52c1c1130",
+      "name": "布林資料類型"
     },
     {
       "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "8ccfcea5-2939-4c27-acfb-61367926e1e8",
-              "name": "json_example_string",
-              "value": "這是簡單的字串",
-              "type": "string"
+              "id": "7846abd6-aa5d-4ebe-b800-7ecc4f317c02",
+              "name": "json_example_null",
+              "value": "null",
+              "type": "object"
             }
           ]
         },
@@ -76,27 +40,21 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        -224,
+        400,
         64
       ],
-      "id": "41e60b8e-c1d6-42fe-b186-e11d912f7545",
-      "name": "字串資料類型"
+      "id": "8e3b5af9-866a-4b51-bc55-e010dc60bb91",
+      "name": "null資料型別"
     },
     {
       "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "459e0058-acb2-438b-b1b8-4d7ce0dca3c8",
-              "name": "json_example_integer",
-              "value": 10,
-              "type": "number"
-            },
-            {
-              "id": "1a530de3-e65a-4704-a165-a38b79f04d67",
-              "name": "json_example_float",
-              "value": 12.5,
-              "type": "number"
+              "id": "004b0911-978d-42df-9d20-769748672220",
+              "name": "json_example_array",
+              "value": "[\"first element\", 2, false, null]",
+              "type": "array"
             }
           ]
         },
@@ -105,41 +63,30 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        -16,
+        608,
         64
       ],
-      "id": "c81b6418-699b-4ea2-8ba8-d1ee12fcd248",
-      "name": "數值資料類型"
+      "id": "4bb5a7a8-92ff-45f0-9411-011db8d757ff",
+      "name": "陣列資料型別"
     }
   ],
   "connections": {
-    "When clicking ‘Execute workflow’": {
+    "布林資料類型": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "null資料型別",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields": {
+    "null資料型別": {
       "main": [
         [
           {
-            "node": "字串資料類型",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "字串資料類型": {
-      "main": [
-        [
-          {
-            "node": "數值資料類型",
+            "node": "陣列資料型別",
             "type": "main",
             "index": 0
           }
