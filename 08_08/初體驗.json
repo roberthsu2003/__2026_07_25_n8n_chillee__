@@ -1,0 +1,36 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 初體驗\n\n適合初學者的第一個範例",
+        "height": 432,
+        "width": 320,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -384,
+        -1328
+      ],
+      "typeVersion": 1,
+      "id": "f322446f-3b68-4e5f-90ea-605f543adf1f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -1152
+      ],
+      "id": "12f864d6-d115-4b84-a011-d7ee7675241d",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {},
+  "pinData": {},
+  "meta": {
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  }
+}
