@@ -117,6 +117,20 @@
       "typeVersion": 1,
       "id": "7fbe0c42-282b-4ce8-977b-75834c784c49",
       "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "customerId": "客戶資料",
+        "message": "=客戶資訊:\n編號: {{$json.編號}}\n姓名: {{ $json.姓名}}\n郵件: {{ $json.郵件 }}\n註解: {{ $json.註解 }}\n建立時間: {{ $json.建立時間 }}"
+      },
+      "type": "n8n-nodes-base.n8nTrainingCustomerMessenger",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -1072
+      ],
+      "id": "24d554a9-56c3-47c2-a44c-0925659bb2b8",
+      "name": "Customer Messenger (n8n training)"
     }
   ],
   "connections": {
@@ -136,6 +150,17 @@
         [
           {
             "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Customer Messenger (n8n training)",
             "type": "main",
             "index": 0
           }
