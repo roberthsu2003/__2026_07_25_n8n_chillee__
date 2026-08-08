@@ -9,11 +9,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -384,
-        -1328
+        -560,
+        -1248
       ],
       "typeVersion": 1,
-      "id": "f322446f-3b68-4e5f-90ea-605f543adf1f",
+      "id": "a92ba522-7abf-4a67-885d-99ca7419eb86",
       "name": "Sticky Note"
     },
     {
@@ -21,14 +21,128 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -288,
-        -1152
+        -464,
+        -1072
       ],
-      "id": "12f864d6-d115-4b84-a011-d7ee7675241d",
-      "name": "When clicking ‘Execute workflow’"
+      "id": "876db3f2-92cb-4ffd-9537-ae85b727879e",
+      "name": "點我可以執行"
+    },
+    {
+      "parameters": {
+        "operation": "getAllPeople"
+      },
+      "type": "n8n-nodes-base.n8nTrainingCustomerDatastore",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -1072
+      ],
+      "id": "e5dc175f-a3c2-4f0f-a7d4-9c9d7844adae",
+      "name": "Customer Datastore (n8n training)"
+    },
+    {
+      "parameters": {
+        "content": "## 取得虛假樣本數據\n",
+        "height": 400,
+        "width": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -160,
+        -1264
+      ],
+      "typeVersion": 1,
+      "id": "2ef020bc-4980-4230-a2fa-8438eff8d60b",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f4477a83-c495-404d-b8e0-336a236dca44",
+              "name": "編號",
+              "value": "={{$json.id}}",
+              "type": "string"
+            },
+            {
+              "id": "feba0c70-9f6c-4508-9940-7d2205caecb4",
+              "name": "姓名",
+              "value": "={{$json.name}}",
+              "type": "string"
+            },
+            {
+              "id": "8798daa6-4940-4e36-9b4f-c2ca6e9b3b3d",
+              "name": "郵件",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "6bec2678-e5e4-4e6f-b011-f5af9655aaff",
+              "name": "=註解",
+              "value": "={{ $json.notes }}",
+              "type": "string"
+            },
+            {
+              "id": "a7478139-f6f5-41c5-b6b7-7d7cb138028c",
+              "name": "建立時間",
+              "value": "={{ $json.created }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        272,
+        -1072
+      ],
+      "id": "6b458d6f-f7ae-469c-bbd3-35c73a2f6b52",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "## 提取資料並準備好供下一節點使用\n",
+        "height": 464,
+        "width": 336,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        224,
+        -1264
+      ],
+      "typeVersion": 1,
+      "id": "7fbe0c42-282b-4ce8-977b-75834c784c49",
+      "name": "Sticky Note2"
     }
   ],
-  "connections": {},
+  "connections": {
+    "點我可以執行": {
+      "main": [
+        [
+          {
+            "node": "Customer Datastore (n8n training)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Customer Datastore (n8n training)": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "pinData": {},
   "meta": {
     "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
