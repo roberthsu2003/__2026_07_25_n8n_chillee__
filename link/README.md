@@ -13,3 +13,8 @@ https://www.youtube.com/watch?v=Rib7RhUcXnc
 https://www.youtube.com/watch?v=sbWm_q-NRfg
 
 ---
+
+## 2026_08_08_早上
+https://www.youtube.com/watch?v=wYP0Tzllje0
+
+---
