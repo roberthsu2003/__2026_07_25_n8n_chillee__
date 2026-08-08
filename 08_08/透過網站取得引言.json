@@ -1,0 +1,102 @@
+{
+  "name": "透過網站取得引言",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -96
+      ],
+      "id": "41ec0881-9a4f-4136-b5e9-7b5f0677737b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://zenquotes.io/api/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -112,
+        -96
+      ],
+      "id": "8fbfd985-5299-4e27-bbf6-b8a910dcee7a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "160a35f6-0c5b-478e-9d76-de20f30fa263",
+              "name": "名言",
+              "value": "={{ $json.q }}",
+              "type": "string"
+            },
+            {
+              "id": "f3cb8987-aee9-4ccb-9796-1ed5ebffeb38",
+              "name": "作者",
+              "value": "={{ $json.a }}",
+              "type": "string"
+            },
+            {
+              "id": "2c7bcbc4-b195-4d0d-bc23-9ef7d59a5e1e",
+              "name": "網頁內容",
+              "value": "={{ $json.h }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        96,
+        -96
+      ],
+      "id": "32c53ffb-cd56-49d3-b06f-e8c4b449962c",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9372bfc2-fe07-4ab8-97ba-e55d01965598",
+  "meta": {
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  },
+  "nodeGroups": [],
+  "id": "i0yJlJyfxuHsiNte",
+  "tags": []
+}
