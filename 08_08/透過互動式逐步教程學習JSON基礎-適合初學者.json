@@ -5,10 +5,28 @@
         "assignments": {
           "assignments": [
             {
-              "id": "236ddc92-3834-4cde-8dfb-ff65b4fa042f",
-              "name": "json_example_boolean",
-              "value": true,
-              "type": "boolean"
+              "id": "d7c047e9-78ab-4aa6-9463-04e80d0ff431",
+              "name": "tw",
+              "value": "={{ $json.json_example_object.tw }}",
+              "type": "string"
+            },
+            {
+              "id": "b7f058ba-3670-43ce-a4f3-5d00644de17a",
+              "name": "jp",
+              "value": "={{ $json.json_example_object.jp }}",
+              "type": "string"
+            },
+            {
+              "id": "1e1722d2-145e-460e-bfc3-ee638e545384",
+              "name": "json_example_integer",
+              "value": "={{ $('數值資料類型').item.json.json_example_integer }}",
+              "type": "number"
+            },
+            {
+              "id": "06026e6e-c2a4-42ac-a512-7e30874d946c",
+              "name": "json_example_float",
+              "value": "={{ $('數值資料類型').item.json.json_example_float }}",
+              "type": "number"
             }
           ]
         },
@@ -17,20 +35,20 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        192,
+        1008,
         64
       ],
-      "id": "02c1c146-9973-44e1-a646-10d52c1c1130",
-      "name": "布林資料類型"
+      "id": "fae02fb2-e059-4e7d-9d60-1573a930f353",
+      "name": "輕鬆取"
     },
     {
       "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "7846abd6-aa5d-4ebe-b800-7ecc4f317c02",
-              "name": "json_example_null",
-              "value": "null",
+              "id": "7395ec9e-8dbd-42a8-b0e1-70757f326af3",
+              "name": "json_example_object",
+              "value": "{\n\"tw\":\"Taiwan\",\n\"jp\": \"Japan\"\n}",
               "type": "object"
             }
           ]
@@ -40,53 +58,19 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        400,
+        800,
         64
       ],
-      "id": "8e3b5af9-866a-4b51-bc55-e010dc60bb91",
-      "name": "null資料型別"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "004b0911-978d-42df-9d20-769748672220",
-              "name": "json_example_array",
-              "value": "[\"first element\", 2, false, null]",
-              "type": "array"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.5,
-      "position": [
-        608,
-        64
-      ],
-      "id": "4bb5a7a8-92ff-45f0-9411-011db8d757ff",
-      "name": "陣列資料型別"
+      "id": "d3266f39-0b6b-4ca2-b152-69e1333b2900",
+      "name": "物件資料型別"
     }
   ],
   "connections": {
-    "布林資料類型": {
+    "物件資料型別": {
       "main": [
         [
           {
-            "node": "null資料型別",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "null資料型別": {
-      "main": [
-        [
-          {
-            "node": "陣列資料型別",
+            "node": "輕鬆取",
             "type": "main",
             "index": 0
           }
