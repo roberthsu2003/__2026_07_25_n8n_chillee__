@@ -1,0 +1,137 @@
+{
+  "name": "透過網站取得引言 - 視覺衝擊通用版",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1728,
+        448
+      ],
+      "id": "986c006a-5dd1-4466-b41b-4a120e34a0c0",
+      "name": "點擊執行工作流"
+    },
+    {
+      "parameters": {
+        "url": "https://zenquotes.io/api/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1936,
+        448
+      ],
+      "id": "9d901a12-98ed-4770-a678-26e250604201",
+      "name": "抓取隨機名言"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "160a35f6-0c5b-478e-9d76-de20f30fa263",
+              "name": "名言原文",
+              "value": "={{ $json.q }}",
+              "type": "string"
+            },
+            {
+              "id": "f3cb8987-aee9-4ccb-9796-1ed5ebffeb38",
+              "name": "作者",
+              "value": "={{ $json.a }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2144,
+        448
+      ],
+      "id": "9c1faedc-13dd-423a-80e2-827d05e43988",
+      "name": "整理資料欄位"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://quickchart.io/chart",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"width\":800,\"height\":450,\"backgroundColor\":\"#0f172a\",\"format\":\"png\",\"version\":\"4\",\"chart\":{\"type\":\"bar\",\"data\":{\"labels\":[\"\"],\"datasets\":[{\"data\":[0],\"backgroundColor\":\"rgba(0,0,0,0)\"}]},\"options\":{\"plugins\":{\"legend\":{\"display\":false},\"title\":{\"display\":true,\"color\":\"#f3f4f6\",\"font\":{\"size\":22},\"text\":[\"✨ DAILY INSPIRATION\",\"\",\"{{ $json['名言原文'] }}\",\"\",\"— {{  $json['作者'] }}\"]}},\"scales\":{\"x\":{\"display\":false},\"y\":{\"display\":false}}}}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2352,
+        448
+      ],
+      "id": "1fdd34d7-841f-426b-8f27-d181260240a3",
+      "name": "生成視覺衝擊卡片圖片"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "點擊執行工作流": {
+      "main": [
+        [
+          {
+            "node": "抓取隨機名言",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "抓取隨機名言": {
+      "main": [
+        [
+          {
+            "node": "整理資料欄位",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "整理資料欄位": {
+      "main": [
+        [
+          {
+            "node": "生成視覺衝擊卡片圖片",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "生成視覺衝擊卡片圖片": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9b325c8e-a0b8-4b9c-b8b3-2ab9427f20ca",
+  "meta": {
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  },
+  "nodeGroups": [],
+  "id": "S7IDbHIkinjINz9D",
+  "tags": [
+    {
+      "updatedAt": "2026-08-08T02:32:46.843Z",
+      "createdAt": "2026-08-08T02:32:46.843Z",
+      "id": "DeR6EkORZqp50ou1",
+      "name": "上課用"
+    }
+  ]
+}
