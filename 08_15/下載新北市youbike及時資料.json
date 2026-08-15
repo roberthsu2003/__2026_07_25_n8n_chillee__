@@ -1,0 +1,212 @@
+{
+  "name": "下載新北市youbike及時資料",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -96
+      ],
+      "id": "4283bdf2-f937-4bda-bfaa-65ba15ca8988",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -416,
+        -96
+      ],
+      "id": "d99376a8-e327-49ec-83cc-a3431bbf7d57",
+      "name": "至新北市youbike下載json"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "新北市youbike及時資料.xlsx"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        -96
+      ],
+      "id": "90229ef8-8f55-45da-9083-4de98f96eaf4",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.sarea }}",
+              "operator": {
+                "operation": "equals",
+                "type": "string"
+              },
+              "rightValue": "士林區",
+              "id": "1614c197-b996-42ba-878c-aa0d8d84d212"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2ee8a66c-df0d-4d41-9336-ee111cafa0a7",
+      "name": "篩選大安區",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -224,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "path": "youbike-daan",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0af3de40-c789-4c2a-8e93-a3755515ef27",
+      "name": "Webhook 大安區網頁",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -640,
+        112
+      ],
+      "webhookId": "6ddb2926-82a8-4eec-8a5d-8e6ad1a085d8"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all().map(i => i.json);\nconst now = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });\n\nconst rows = items.map(s => `\n  <tr>\n    <td>${s.sna || ''}</td>\n    <td style=\"color:#16a34a;font-weight:bold\">${s.sbi ?? ''}</td>\n    <td style=\"color:#dc2626;font-weight:bold\">${s.bemp ?? ''}</td>\n    <td>${s.tot ?? ''}</td>\n    <td>${s.ar || ''}</td>\n    <td>${s.mday || ''}</td>\n  </tr>`).join('');\n\nconst html = `<!DOCTYPE html>\n<html lang=\"zh-Hant\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>大安區 YouBike 即時資訊</title>\n<style>\n  body { font-family: -apple-system, \"Microsoft JhengHei\", sans-serif; background:#f8fafc; margin:0; padding:24px; }\n  h1 { color:#1e293b; }\n  .meta { color:#64748b; margin-bottom:16px; }\n  table { width:100%; border-collapse:collapse; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.1); border-radius:8px; overflow:hidden; }\n  th, td { padding:10px 14px; text-align:left; border-bottom:1px solid #e2e8f0; font-size:14px; }\n  th { background:#0f172a; color:#fff; }\n  tr:hover { background:#f1f5f9; }\n</style>\n</head>\n<body>\n  <h1>🚲 大安區 YouBike 即時資訊</h1>\n  <div class=\"meta\">共 ${items.length} 站，頁面產生時間：${now}</div>\n  <table>\n    <thead>\n      <tr><th>站名</th><th>可借車</th><th>可還車</th><th>總度</th><th>地址</th><th>資料更新時間</th></tr>\n    </thead>\n    <tbody>${rows}</tbody>\n  </table>\n</body>\n</html>`;\n\nreturn [{ json: { html } }];"
+      },
+      "id": "ce31b1e9-c993-4c73-ab46-e5430555212e",
+      "name": "建立HTML頁面",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "id": "81c3db41-a696-4067-853a-728ba3ec63e1",
+      "name": "回應網頁",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        208,
+        112
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "至新北市youbike下載json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "至新北市youbike下載json": {
+      "main": [
+        [
+          {
+            "node": "篩選大安區",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "篩選大安區": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "建立HTML頁面",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook 大安區網頁": {
+      "main": [
+        [
+          {
+            "node": "至新北市youbike下載json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "建立HTML頁面": {
+      "main": [
+        [
+          {
+            "node": "回應網頁",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "55fd13b5-3047-47b4-ac14-de923f3ce4b6",
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  },
+  "nodeGroups": [],
+  "id": "HfF9qwDjLLOZH1Fb",
+  "tags": []
+}
