@@ -1,0 +1,103 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        0
+      ],
+      "id": "3c7b5397-1eb8-41ab-bbaa-87eaa67624f1",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://data.moenv.gov.tw/api/v2/gp_p_01?api_key=b7df779e-71a6-4148-8379-5afbd441d803&limit=1000&sort=ImportDate desc&format=CSV",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "77c98947-8d21-4ca1-9686-1b5052dc8f96",
+      "name": "下載檔案"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        0
+      ],
+      "id": "d96463ce-b148-47cf-8266-37f8acd8b89d",
+      "name": "將下載資料轉換為json"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "data.xlsx"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        0
+      ],
+      "id": "b8588c13-06e6-4d66-8e30-152ab61474ab",
+      "name": "轉換為Excel檔"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "下載檔案",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "下載檔案": {
+      "main": [
+        [
+          {
+            "node": "將下載資料轉換為json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "將下載資料轉換為json": {
+      "main": [
+        [
+          {
+            "node": "轉換為Excel檔",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  }
+}
