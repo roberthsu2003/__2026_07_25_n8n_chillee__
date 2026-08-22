@@ -1,17 +1,5 @@
 {
-  "name": "學生成績單",
   "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -592,
-        -32
-      ],
-      "id": "1aad6cd5-e66f-484d-a940-ec14bff39647",
-      "name": "When clicking ‘Execute workflow’"
-    },
     {
       "parameters": {
         "operation": "get",
@@ -27,11 +15,11 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        -384,
-        -32
+        -432,
+        -192
       ],
       "id": "259e7e61-e58b-4adb-8bb8-9fd4c4337341",
-      "name": "Get row(s)"
+      "name": "取得學生成績資料"
     },
     {
       "parameters": {
@@ -74,31 +62,95 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        -208,
-        -32
+        -256,
+        -192
       ],
       "id": "853b6041-b07d-4c74-a7d9-41e138ce0064",
-      "name": "Edit Fields"
+      "name": "將欄位改為中文"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4536cee4-3c87-4862-90ca-a98eb4fc6129",
+              "name": "姓名",
+              "value": "={{ $json['姓名'] }}",
+              "type": "string"
+            },
+            {
+              "id": "8c5c5d8b-872d-4bb5-be70-4f9f2f5c4fea",
+              "name": "學號",
+              "value": "={{ $json['學號'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9788e111-c055-4c59-82b2-1a4df75caa31",
+              "name": "總分",
+              "value": "={{ $json.國文 + $json.英文 + $json.數學 }}",
+              "type": "number"
+            },
+            {
+              "id": "775ed599-387d-4c03-ac63-e9385d0d6899",
+              "name": "平均",
+              "value": "={{ (($json.國文 + $json.英文 + $json.數學) / 3).toFixed(2) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -80,
+        -192
+      ],
+      "id": "826a5c02-db56-4938-ab51-d933e8606688",
+      "name": "計算分數"
+    },
+    {
+      "parameters": {
+        "jsCode": "const ranked = items\n  .map((item, index) => ({ item, index, average: Number(item.json['平均']) }))\n  .sort((a, b) => {\n    const aAverage = Number.isFinite(a.average) ? a.average : -Infinity;\n    const bAverage = Number.isFinite(b.average) ? b.average : -Infinity;\n    return bAverage - aAverage || a.index - b.index;\n  });\n\nlet previousAverage;\nlet previousRank = 0;\n\nreturn ranked.map((entry, index) => {\n  const average = entry.average;\n  if (average !== previousAverage) {\n    previousRank = index + 1;\n    previousAverage = average;\n  }\n\n  return {\n    json: {\n      ...entry.item.json,\n      '排名': previousRank,\n    },\n    pairedItem: { item: entry.index },\n  };\n});"
+      },
+      "id": "4ba6a6e2-28bc-4a25-a846-a6cce35f9760",
+      "name": "排序並排名",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -192
+      ]
     }
   ],
-  "pinData": {},
   "connections": {
-    "When clicking ‘Execute workflow’": {
+    "取得學生成績資料": {
       "main": [
         [
           {
-            "node": "Get row(s)",
+            "node": "將欄位改為中文",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Get row(s)": {
+    "將欄位改為中文": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "計算分數",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "計算分數": {
+      "main": [
+        [
+          {
+            "node": "排序並排名",
             "type": "main",
             "index": 0
           }
@@ -106,24 +158,10 @@
       ]
     }
   },
-  "active": false,
-  "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate",
-    "availableInMCP": false
-  },
-  "versionId": "98484c75-f553-4d7a-a597-5ebdacb39668",
+  "pinData": {},
   "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
     "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
-  },
-  "nodeGroups": [],
-  "id": "Hj08MJTjm9jPcDu3",
-  "tags": [
-    {
-      "updatedAt": "2026-08-08T02:32:46.843Z",
-      "createdAt": "2026-08-08T02:32:46.843Z",
-      "id": "DeR6EkORZqp50ou1",
-      "name": "上課用"
-    }
-  ]
+  }
 }
