@@ -1,0 +1,15 @@
+# Environment variables and secrets
+.env
+.env.*
+*.env
+
+# MCP Configurations containing tokens/credentials
+.agents/
+opencode.json
+
+# macOS & OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
