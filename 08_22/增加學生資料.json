@@ -1,0 +1,401 @@
+{
+  "name": "增加學生資料",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "學生成績輸入",
+        "formDescription": "每個欄位必需填寫",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "學號",
+              "fieldType": "number",
+              "defaultValue": "20230501",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "姓名",
+              "placeholder": "徐xx",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "國文",
+              "fieldType": "number",
+              "defaultValue": "0"
+            },
+            {
+              "fieldLabel": "英文",
+              "fieldType": "number",
+              "defaultValue": "0"
+            },
+            {
+              "fieldLabel": "數學",
+              "fieldType": "number",
+              "defaultValue": "0"
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -192,
+        192
+      ],
+      "id": "7604434c-1749-4c33-b140-00b6ea3d8e59",
+      "name": "學生成績輸入",
+      "webhookId": "98c2f278-c692-4324-8577-0837bc7182fa"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d1c79fe1-3de1-44a4-8192-241e222792d8",
+              "leftValue": "={{ $json['國文'] }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "f1f57d84-4602-4974-9acb-74ae3ffc76c3",
+              "leftValue": "={{ $json['英文'] }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "a7127f33-b54e-4768-8eb8-393b9b679231",
+              "leftValue": "={{ $json['數學'] }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        -16
+      ],
+      "id": "e7c6750b-5619-43ff-bb38-d91f233751e7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5a037a8f-12f6-4742-84f7-9572260bfb1a",
+              "leftValue": "={{ $('學生成績輸入').item.json['國文'] }}",
+              "rightValue": 100,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            },
+            {
+              "id": "4caf6775-a0cb-4476-b4ca-760c3ad31c05",
+              "leftValue": "={{ $('學生成績輸入').item.json['英文'] }}",
+              "rightValue": 100,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            },
+            {
+              "id": "1ce1a96d-fb0e-4aac-bdb9-c394707bf4b8",
+              "leftValue": "={{ $('學生成績輸入').item.json['數學'] }}",
+              "rightValue": 100,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        192,
+        -64
+      ],
+      "id": "b1b72973-0544-46dd-8383-5eb957e5bad6",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "bpMJc0nkFpBa3iy3",
+          "mode": "list",
+          "cachedResultName": "學生成績",
+          "cachedResultUrl": "/projects/rEj62SV7csk3F3D3/datatables/bpMJc0nkFpBa3iy3"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json['姓名'] }}",
+            "sn": "={{ $json['學號'] }}",
+            "chinese": "={{ $json['國文'] }}",
+            "english": "={{ $json['英文'] }}",
+            "math": "={{ $json['數學'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sn",
+              "displayName": "sn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "chinese",
+              "displayName": "chinese",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "english",
+              "displayName": "english",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "math",
+              "displayName": "math",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        -112
+      ],
+      "id": "ac3cc166-b2a2-476e-97e4-4575b116feb0",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "=={{ ($json['國文'] < 0 || $json['國文'] > 100 || $json['英文'] < 0 || $json['英文'] > 100 || $json['數學'] < 0 || $json['數學'] > 100) ? 0 : 1 }}",
+        "looseTypeValidation": "="
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        192
+      ],
+      "id": "a10fcc03-c779-485f-9cdb-01da92e2fcc7",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "bpMJc0nkFpBa3iy3",
+          "mode": "list",
+          "cachedResultName": "學生成績",
+          "cachedResultUrl": "/projects/rEj62SV7csk3F3D3/datatables/bpMJc0nkFpBa3iy3"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $('學生成績輸入').item.json['姓名'] }}",
+            "sn": "={{ $('學生成績輸入').item.json['學號'] }}",
+            "chinese": "={{ $('學生成績輸入').item.json['國文'] }}",
+            "english": "={{ $('學生成績輸入').item.json['英文'] }}",
+            "math": "={{ $('學生成績輸入').item.json['數學'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sn",
+              "displayName": "sn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "chinese",
+              "displayName": "chinese",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "english",
+              "displayName": "english",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "math",
+              "displayName": "math",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        208
+      ],
+      "id": "ca008b18-0192-41cb-bba8-3e3d1ce57b82",
+      "name": "Insert row1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "學生成績輸入": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Insert row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0edf7367-51d6-473d-ac95-c3f94dab8371",
+  "meta": {
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  },
+  "nodeGroups": [],
+  "id": "AlN4V1ygD02pY2W1",
+  "tags": []
+}
