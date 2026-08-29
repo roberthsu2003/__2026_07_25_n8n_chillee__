@@ -1,66 +1,5 @@
 {
-  "name": "網站引言-翻譯版",
   "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -80,
-        16
-      ],
-      "id": "2c62c512-8cc4-43ff-b730-883226391d5f",
-      "name": "When clicking ‘Execute workflow’"
-    },
-    {
-      "parameters": {
-        "url": "https://zenquotes.io/api/random",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        128,
-        16
-      ],
-      "id": "eda4a334-eaef-4108-be3e-fbb768cd5f5c",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "160a35f6-0c5b-478e-9d76-de20f30fa263",
-              "name": "名言",
-              "value": "={{ $json.q }}",
-              "type": "string"
-            },
-            {
-              "id": "f3cb8987-aee9-4ccb-9796-1ed5ebffeb38",
-              "name": "作者",
-              "value": "={{ $json.a }}",
-              "type": "string"
-            },
-            {
-              "id": "2c7bcbc4-b195-4d0d-bc23-9ef7d59a5e1e",
-              "name": "網頁內容",
-              "value": "={{ $json.h }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.5,
-      "position": [
-        304,
-        16
-      ],
-      "id": "7a2873db-86f8-4b59-a2e6-bd94761d01c5",
-      "name": "Edit Fields"
-    },
     {
       "parameters": {
         "assignments": {
@@ -69,13 +8,13 @@
               "id": "original-quote",
               "name": "原文名言",
               "type": "string",
-              "value": "={{ $('Edit Fields').item.json['名言'] }}"
+              "value": "={{ $('更改欄位名稱').item.json['名言'] }}"
             },
             {
               "id": "author",
               "name": "作者",
               "type": "string",
-              "value": "={{ $('Edit Fields').item.json['作者'] }}"
+              "value": "={{ $('更改欄位名稱').item.json['作者'] }}"
             },
             {
               "id": "translated-quote",
@@ -92,8 +31,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        832,
-        0
+        848,
+        16
       ]
     },
     {
@@ -130,43 +69,77 @@
       ],
       "id": "ccb7c501-0bd7-497f-b1f9-c7d24f38a4f3",
       "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "url": "https://zenquotes.io/api/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        128,
+        16
+      ],
+      "id": "eda4a334-eaef-4108-be3e-fbb768cd5f5c",
+      "name": "取得隨機名言 (ZenQuotes)"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "160a35f6-0c5b-478e-9d76-de20f30fa263",
+              "name": "名言",
+              "value": "={{ $json.q }}",
+              "type": "string"
+            },
+            {
+              "id": "f3cb8987-aee9-4ccb-9796-1ed5ebffeb38",
+              "name": "作者",
+              "value": "={{ $json.a }}",
+              "type": "string"
+            },
+            {
+              "id": "2c7bcbc4-b195-4d0d-bc23-9ef7d59a5e1e",
+              "name": "網頁內容",
+              "value": "={{ $json.h }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        304,
+        16
+      ],
+      "id": "7a2873db-86f8-4b59-a2e6-bd94761d01c5",
+      "name": "更改欄位名稱"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "quote-translate",
+        "responseMode": "lastNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -80,
+        16
+      ],
+      "id": "5ca84284-9e40-4269-85cd-438d88f53f16",
+      "name": "Webhook",
+      "webhookId": "f067bfc4-702f-47cb-895c-191013a13606"
     }
   ],
-  "pinData": {},
   "connections": {
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "Basic LLM Chain",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Ollama Chat Model": {
       "ai_languageModel": [
         [
@@ -188,24 +161,46 @@
           }
         ]
       ]
+    },
+    "取得隨機名言 (ZenQuotes)": {
+      "main": [
+        [
+          {
+            "node": "更改欄位名稱",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "更改欄位名稱": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "取得隨機名言 (ZenQuotes)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
-  "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate",
-    "availableInMCP": true,
-    "timeSavedMode": "fixed",
-    "callerPolicy": "workflowsFromSameOwner"
-  },
-  "versionId": "7309ee69-fd76-4023-b2cc-589be6582938",
+  "pinData": {},
   "meta": {
     "aiBuilderAssisted": true,
     "builderVariant": "mcp",
     "templateCredsSetupCompleted": true,
     "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
-  },
-  "nodeGroups": [],
-  "id": "XlE9VvX1AEsiCga7",
-  "tags": []
+  }
 }
