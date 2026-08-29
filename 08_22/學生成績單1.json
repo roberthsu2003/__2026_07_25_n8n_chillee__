@@ -1,5 +1,4 @@
 {
-  "name": "學生成績單1",
   "nodes": [
     {
       "parameters": {
@@ -373,9 +372,103 @@
       ],
       "id": "1cf7ce2e-773b-47a0-9861-ad9a8d62df65",
       "name": "全部大於80"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "13823f19-8e5b-4e6c-aab8-5677db72d641",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "王",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        96,
+        720
+      ],
+      "id": "2d99c7eb-71db-4317-ac38-a3f84e56d744",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4fd3d060-a060-498c-aecf-8de05418042a",
+              "leftValue": "={{ $json.chinese + $json.english + $json.math}}",
+              "rightValue": 250,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        320,
+        640
+      ],
+      "id": "1beb56d9-c1f4-4244-a185-3dce22feeead",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e94ce7d1-e1c1-4665-b26a-19568a1014cf",
+              "name": "姓名",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "90253cfb-f67f-4578-82e5-1aba0f333f22",
+              "name": "編號",
+              "value": "={{ $json.sn }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        544,
+        544
+      ],
+      "id": "f208a680-4dc9-4293-8633-e04b668194b5",
+      "name": "Edit Fields"
     }
   ],
-  "pinData": {},
   "connections": {
     "取得學生成績資料": {
       "main": [
@@ -410,17 +503,6 @@
         ]
       ]
     },
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "Get row(s)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "排序並排名": {
       "main": [
         [
@@ -432,11 +514,27 @@
         ]
       ]
     },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Get row(s)": {
       "main": [
         [
           {
             "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -460,18 +558,32 @@
           }
         ]
       ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
-  "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate"
-  },
-  "versionId": "eb3720f4-bd7a-499a-b202-e59a8020476c",
+  "pinData": {},
   "meta": {
     "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
-  },
-  "nodeGroups": [],
-  "id": "fihuAl1W53wlSE4z",
-  "tags": []
+  }
 }
