@@ -1,0 +1,211 @@
+{
+  "name": "網站引言-翻譯版",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        16
+      ],
+      "id": "2c62c512-8cc4-43ff-b730-883226391d5f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://zenquotes.io/api/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        128,
+        16
+      ],
+      "id": "eda4a334-eaef-4108-be3e-fbb768cd5f5c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "160a35f6-0c5b-478e-9d76-de20f30fa263",
+              "name": "名言",
+              "value": "={{ $json.q }}",
+              "type": "string"
+            },
+            {
+              "id": "f3cb8987-aee9-4ccb-9796-1ed5ebffeb38",
+              "name": "作者",
+              "value": "={{ $json.a }}",
+              "type": "string"
+            },
+            {
+              "id": "2c7bcbc4-b195-4d0d-bc23-9ef7d59a5e1e",
+              "name": "網頁內容",
+              "value": "={{ $json.h }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        304,
+        16
+      ],
+      "id": "7a2873db-86f8-4b59-a2e6-bd94761d01c5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "original-quote",
+              "name": "原文名言",
+              "type": "string",
+              "value": "={{ $('Edit Fields').item.json['名言'] }}"
+            },
+            {
+              "id": "author",
+              "name": "作者",
+              "type": "string",
+              "value": "={{ $('Edit Fields').item.json['作者'] }}"
+            },
+            {
+              "id": "translated-quote",
+              "name": "繁體中文翻譯",
+              "type": "string",
+              "value": "={{ $json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2c944eeb-3fda-4247-a03e-6672eb06f8a8",
+      "name": "整理翻譯結果",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        832,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b-cloud",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        496,
+        160
+      ],
+      "id": "06d86eb4-cae3-44aa-9f43-7f1a5bade5cb",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "5iUijcDKKWPcDacM",
+          "name": "Ollama"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=請將以下英文名言翻譯成繁體中文，只回傳翻譯結果，不要其他說明：\n\n{{ $json.名言 }}\n\n作者：{{ $json.作者 }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        528,
+        16
+      ],
+      "id": "ccb7c501-0bd7-497f-b1f9-c7d24f38a4f3",
+      "name": "Basic LLM Chain"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "整理翻譯結果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "7309ee69-fd76-4023-b2cc-589be6582938",
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  },
+  "nodeGroups": [],
+  "id": "XlE9VvX1AEsiCga7",
+  "tags": []
+}
