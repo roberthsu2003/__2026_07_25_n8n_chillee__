@@ -1,0 +1,565 @@
+{
+  "name": "兄弟飯店客服",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "line_bot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -672,
+        192
+      ],
+      "id": "d0777d1e-f476-4b90-815b-c66cb2c81681",
+      "name": "Webhook",
+      "webhookId": "c3d30e77-1960-4ac9-81f8-d7a0ad8e40e9"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"status\": 200}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -448,
+        96
+      ],
+      "id": "e2a702c9-77e5-4d0c-9d67-b91845f2eb22",
+      "name": "回傳line_webhook_200ok"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messageType }}",
+                    "operator": {
+                      "operation": "equals",
+                      "type": "string"
+                    },
+                    "rightValue": "text",
+                    "id": "c095f620-2a04-45ed-b712-a2fcb204f310"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messageType }}",
+                    "operator": {
+                      "operation": "equals",
+                      "type": "string"
+                    },
+                    "rightValue": "image",
+                    "id": "d26fc5ae-7810-4f12-97bc-a03cdf634b24"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messageType }}",
+                    "operator": {
+                      "operation": "equals",
+                      "type": "string"
+                    },
+                    "rightValue": "sticker",
+                    "id": "6584b472-f7d1-4833-b3e6-1a414574cf6d"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "其他類型"
+        }
+      },
+      "id": "12e0620a-faca-464b-98c1-1a28f95e013f",
+      "name": "根據訊息類型分流",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -176,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "handled-type",
+              "name": "handledType",
+              "type": "string",
+              "value": "text_message"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "4ff862f1-75b3-4d77-a2bc-52b694d6c842",
+      "name": "處理文字訊息",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "handled-type",
+              "name": "handledType",
+              "type": "string",
+              "value": "image_message"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "0b8f2b71-86eb-4f6f-beac-d47c282f9ca0",
+      "name": "處理圖片訊息",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "handled-type",
+              "name": "handledType",
+              "type": "string",
+              "value": "sticker_message"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "083c3763-120b-403f-8d9d-bd34a9149290",
+      "name": "處理貼圖訊息",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "handled-type",
+              "name": "handledType",
+              "type": "string",
+              "value": "other_message"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "6c5af052-7498-45d2-939d-b7ce20457ba5",
+      "name": "處理其他訊息",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const events = $input.first().json.body?.events || $input.first().json.events || [];\nconst event = events[0] || {};\nconst msg = event.message || {};\n\nreturn {\n  json: {\n    messageType: msg.type || 'unknown',\n    messageText: msg.text || '',\n    replyToken: event.replyToken || ''\n  }\n};"
+      },
+      "id": "0e3985d1-3d0f-4399-8c8d-f2f381539e96",
+      "name": "提取訊息_Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ \n  { \n      \"replyToken\": $('提取訊息_Code').first().json.replyToken, \n      \"messages\": [ { \"type\": \"text\", \"text\": $json.text } ] \n  } \n}}",
+        "options": {}
+      },
+      "id": "877c150b-bd02-4bd0-af3c-fd59de417f46",
+      "name": "回覆文字訊息",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        544,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cEj9pNdgb8tJ3YVR",
+          "name": "n8n_auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.replyBody }}",
+        "options": {}
+      },
+      "id": "604eb88d-fbe6-4214-afeb-682739bc00b1",
+      "name": "回覆不支援訊息",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        544,
+        384
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cEj9pNdgb8tJ3YVR",
+          "name": "n8n_auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const messageType = $input.first().json.messageType || 'unknown';\nreturn {\n  json: {\n    replyToken: $input.first().json.replyToken,\n    replyBody: {\n      replyToken: $input.first().json.replyToken,\n      messages: [\n        {\n          type: 'text',\n          text: '不支援' + messageType + '訊息'\n        }\n      ]\n    }\n  }\n};"
+      },
+      "id": "343449fe-c698-4ae0-aa3b-eddc61879699",
+      "name": "沖下不支援訊息內容",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messageText }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=## role: 你是一個line的機器人\n## task: 回應使用者\n## context:\n- 現在使用者是用line和你對話\n## constraint:\n- 必需要客氣有禮貌\n- 回應的第一句,必需是\"親愛的顧客:\"\n- 最後一句是我們的客服人員會快速和你聯絡\n- 100字以內\n## format:\n適合顯示在line的純文字格式"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        224,
+        0
+      ],
+      "id": "80115eb6-a38e-44cf-96bf-847b1e64cc16",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b-cloud",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        224,
+        192
+      ],
+      "id": "5c1c3bed-e44b-4c5c-a236-14b0e51dec9b",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "5iUijcDKKWPcDacM",
+          "name": "Ollama"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
+            "user-agent": "LineBotWebhook/2.0",
+            "content-length": "863",
+            "content-type": "application/json; charset=utf-8",
+            "x-forwarded-for": "147.92.150.198",
+            "x-forwarded-host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
+            "x-forwarded-proto": "https",
+            "x-line-signature": "1rCLx5l0AS2FPMMRHJWI/WhNdQqpzr+pboYlzGhKqsY=",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "destination": "U881b8522859a69bb0889af6ac7fc42e4",
+            "events": [
+              {
+                "type": "message",
+                "message": {
+                  "type": "text",
+                  "id": "630423433419161758",
+                  "quoteToken": "HRy7tSp-DkLOSOdiF9uYYzXiEAzwtAdAtv7se4-xxNIdbA0pDYhOKcQZ32fNHU-oFqSiVKjns5dzRPkpdZq7t791sEeIAVvr3TIhlTeeb8JGgKF-Vewy89k4UDrKLHucIiX1kMANfzJ2pVbn-NMung",
+                  "markAsReadToken": "LxihoomNLdwlkh7zbzZrnVGBuJYgl5D8QlPNQkgzwBZ5LARNUD6jFAFs_Hj5JTZe9URRrnQnabtI6fyFFd5-ldoUjN81ZW4LrJyHmbOg7tN4dEp0W7zXpuuRoWvxfBCXXxEenlBSeWX17eF9SiqgWCPNbhSRrGwl8XQirhhxmNcHatX0vMGTx_69teBk_xoARG6saZ2JPyxyzaY1PV_mFw",
+                  "text": "天空為什麼是藍的?"
+                },
+                "webhookEventId": "01M1R755CEG23XSGKWQ8H9D1J4",
+                "deliveryContext": {
+                  "isRedelivery": false
+                },
+                "timestamp": 1788592952211,
+                "source": {
+                  "type": "group",
+                  "groupId": "C212aacf4552d39b3f0882d53e9204d3f",
+                  "userId": "U0b2c8c2e38246e614e35d4e9fb8d8e81"
+                },
+                "replyToken": "7960707c2fb740a18d631c2519743a8f",
+                "mode": "active"
+              }
+            ]
+          },
+          "webhookUrl": "https://superinnocent-hillary-unwholesome.ngrok-free.dev/webhook/line_bot",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "處理文字訊息": [
+      {
+        "json": {
+          "messageType": "text",
+          "messageText": "天空為什麼是藍的?",
+          "replyToken": "7960707c2fb740a18d631c2519743a8f",
+          "handledType": "text_message"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "回傳line_webhook_200ok",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "提取訊息_Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "根據訊息類型分流": {
+      "main": [
+        [
+          {
+            "node": "處理文字訊息",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "處理圖片訊息",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "處理貼圖訊息",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "處理其他訊息",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "處理文字訊息": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "處理圖片訊息": {
+      "main": [
+        [
+          {
+            "node": "沖下不支援訊息內容",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "處理貼圖訊息": {
+      "main": [
+        [
+          {
+            "node": "沖下不支援訊息內容",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "處理其他訊息": {
+      "main": [
+        [
+          {
+            "node": "沖下不支援訊息內容",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "提取訊息_Code": {
+      "main": [
+        [
+          {
+            "node": "根據訊息類型分流",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "沖下不支援訊息內容": {
+      "main": [
+        [
+          {
+            "node": "回覆不支援訊息",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "回覆文字訊息",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "06c113a6-46b2-40b4-b782-fede3f6e164e",
+  "meta": {
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  },
+  "nodeGroups": [],
+  "id": "ajfUkS7WofAJBQ1y",
+  "tags": []
+}
