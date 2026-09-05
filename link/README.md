@@ -49,4 +49,7 @@ https://www.youtube.com/watch?v=VA9iT-6ZDCc
 ## 2026_09_05_上午
 https://www.youtube.com/watch?v=n6RYFECZJ0Y
 
+## 2026_09_05_下午
+https://www.youtube.com/watch?v=7A4yimTlrdg
+
 ---
