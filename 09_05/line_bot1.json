@@ -1,0 +1,64 @@
+{
+  "name": "line_bot1",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "line_bot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ad59bffd-f53c-4493-8218-ff6f03e5b201",
+      "name": "Webhook",
+      "webhookId": "09567d8a-ad03-4723-8672-04927f4b0782"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"status\": 200}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "5552f090-7c43-40e0-942c-53c64ee55719",
+      "name": "回傳line_webhook_200ok"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "回傳line_webhook_200ok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "03e4e587-b309-41ac-98dc-5af035b1483a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  },
+  "nodeGroups": [],
+  "id": "TIrYvhpDE0HizDhm",
+  "tags": []
+}
