@@ -1,5 +1,4 @@
 {
-  "name":"收取linebot傳過來的訊息.json",
   "nodes": [
     {
       "parameters": {
@@ -224,6 +223,98 @@
         256,
         160
       ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.replyBody) }}",
+        "options": {}
+      },
+      "id": "86cdeddc-44f0-46f6-8a60-e422e641e925",
+      "name": "回覆文字訊息",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1040,
+        -144
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cEj9pNdgb8tJ3YVR",
+          "name": "n8n_auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.replyBody) }}",
+        "options": {}
+      },
+      "id": "878b96c5-ca1b-4e66-a047-ccd122a8a3d7",
+      "name": "回覆不支援訊息",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1072,
+        144
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cEj9pNdgb8tJ3YVR",
+          "name": "n8n_auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  json: {\n    replyToken: $input.first().json.replyToken,\n    messageText: $input.first().json.messageText,\n    replyBody: {\n      replyToken: $input.first().json.replyToken,\n      messages: [\n        {\n          type: 'text',\n          text: '你傳送的訊息是:' + $input.first().json.messageText\n        }\n      ]\n    }\n  }\n};"
+      },
+      "id": "4f3b2ed0-a297-4b04-9d06-e42da31856e0",
+      "name": "沖下文字訊息內容",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const messageType = $input.first().json.messageType || 'unknown';\nreturn {\n  json: {\n    replyToken: $input.first().json.replyToken,\n    replyBody: {\n      replyToken: $input.first().json.replyToken,\n      messages: [\n        {\n          type: 'text',\n          text: '不支援' + messageType + '訊息'\n        }\n      ]\n    }\n  }\n};"
+      },
+      "id": "8a854a71-5840-4f9c-844d-7c692d3b1c87",
+      "name": "沖下不支援訊息內容",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        384
+      ]
     }
   ],
   "connections": {
@@ -275,11 +366,82 @@
         ]
       ]
     },
+    "處理文字訊息": {
+      "main": [
+        [
+          {
+            "node": "回覆文字訊息",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "沖下文字訊息內容",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "處理圖片訊息": {
+      "main": [
+        [
+          {
+            "node": "回覆不支援訊息",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "處理貼圖訊息": {
+      "main": [
+        [
+          {
+            "node": "回覆不支援訊息",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "處理其他訊息": {
+      "main": [
+        [
+          {
+            "node": "沖下不支援訊息內容",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "提取訊息_Code": {
       "main": [
         [
           {
             "node": "根據訊息類型分流",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "沖下文字訊息內容": {
+      "main": [
+        [
+          {
+            "node": "回覆文字訊息",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "沖下不支援訊息內容": {
+      "main": [
+        [
+          {
+            "node": "回覆不支援訊息",
             "type": "main",
             "index": 0
           }
