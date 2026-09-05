@@ -1,0 +1,297 @@
+{
+  "name":"收取linebot傳過來的訊息.json",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "line_bot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        48
+      ],
+      "id": "ad59bffd-f53c-4493-8218-ff6f03e5b201",
+      "name": "Webhook",
+      "webhookId": "09567d8a-ad03-4723-8672-04927f4b0782"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"status\": 200}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        128,
+        -48
+      ],
+      "id": "5552f090-7c43-40e0-942c-53c64ee55719",
+      "name": "回傳line_webhook_200ok"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messageType }}",
+                    "operator": {
+                      "operation": "equals",
+                      "type": "string"
+                    },
+                    "rightValue": "text"
+                  }
+                ],
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                }
+              }
+            },
+            {
+              "conditions": {
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messageType }}",
+                    "operator": {
+                      "operation": "equals",
+                      "type": "string"
+                    },
+                    "rightValue": "image"
+                  }
+                ],
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                }
+              }
+            },
+            {
+              "conditions": {
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messageType }}",
+                    "operator": {
+                      "operation": "equals",
+                      "type": "string"
+                    },
+                    "rightValue": "sticker"
+                  }
+                ],
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                }
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "其他類型"
+        }
+      },
+      "id": "08c5fd43-2076-405d-8192-6333793fb183",
+      "name": "根據訊息類型分流",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        400,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "handled-type",
+              "name": "handledType",
+              "type": "string",
+              "value": "text_message"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "b3675e7c-101d-403f-b5f0-a3f9f62afd05",
+      "name": "處理文字訊息",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "handled-type",
+              "name": "handledType",
+              "type": "string",
+              "value": "image_message"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "e0e406dd-e4aa-497d-9fd1-86b096b76fbb",
+      "name": "處理圖片訊息",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "handled-type",
+              "name": "handledType",
+              "type": "string",
+              "value": "sticker_message"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "1482acc0-4d6c-41b2-b392-0e71e478e2d8",
+      "name": "處理貼圖訊息",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "handled-type",
+              "name": "handledType",
+              "type": "string",
+              "value": "other_message"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "9f5b65dd-7464-418e-9d5c-ba80549e7451",
+      "name": "處理其他訊息",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const events = $input.first().json.body?.events || $input.first().json.events || [];\nconst event = events[0] || {};\nconst msg = event.message || {};\n\nreturn {\n  json: {\n    messageType: msg.type || 'unknown',\n    messageText: msg.text || '',\n    replyToken: event.replyToken || ''\n  }\n};"
+      },
+      "id": "d543b54d-b8e3-4bb3-814f-001fe86e2918",
+      "name": "提取訊息_Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        160
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "回傳line_webhook_200ok",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "提取訊息_Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "根據訊息類型分流": {
+      "main": [
+        [
+          {
+            "node": "處理文字訊息",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "處理圖片訊息",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "處理貼圖訊息",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "處理其他訊息",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "提取訊息_Code": {
+      "main": [
+        [
+          {
+            "node": "根據訊息類型分流",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  }
+}
