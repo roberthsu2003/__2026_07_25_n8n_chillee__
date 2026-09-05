@@ -237,9 +237,8 @@
           ]
         },
         "sendBody": true,
-        "contentType": "raw",
-        "rawContentType": "application/json",
-        "body": "={{ JSON.stringify($json.replyBody) }}",
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.replyBody }}",
         "options": {}
       },
       "id": "86cdeddc-44f0-46f6-8a60-e422e641e925",
@@ -265,14 +264,11 @@
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
-          "parameters": [
-            {}
-          ]
+          "parameters": []
         },
         "sendBody": true,
-        "contentType": "raw",
-        "rawContentType": "application/json",
-        "body": "={{ JSON.stringify($json.replyBody) }}",
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.replyBody }}",
         "options": {}
       },
       "id": "878b96c5-ca1b-4e66-a047-ccd122a8a3d7",
@@ -370,11 +366,6 @@
       "main": [
         [
           {
-            "node": "回覆文字訊息",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "沖下文字訊息內容",
             "type": "main",
             "index": 0
@@ -386,7 +377,7 @@
       "main": [
         [
           {
-            "node": "回覆不支援訊息",
+            "node": "沖下不支援訊息內容",
             "type": "main",
             "index": 0
           }
@@ -397,7 +388,7 @@
       "main": [
         [
           {
-            "node": "回覆不支援訊息",
+            "node": "沖下不支援訊息內容",
             "type": "main",
             "index": 0
           }
