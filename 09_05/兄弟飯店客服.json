@@ -1,5 +1,4 @@
 {
-  "name": "兄弟飯店客服",
   "nodes": [
     {
       "parameters": {
@@ -124,10 +123,22 @@
         "assignments": {
           "assignments": [
             {
-              "id": "handled-type",
-              "name": "handledType",
-              "type": "string",
-              "value": "text_message"
+              "id": "d9edebd2-6ccd-4bbf-a284-05706e33dae3",
+              "name": "messageType",
+              "value": "={{ $json.messageType }}",
+              "type": "string"
+            },
+            {
+              "id": "a56ad925-1a66-4ad3-a572-45a5f6030794",
+              "name": "messageText",
+              "value": "={{ $json.messageText }}",
+              "type": "string"
+            },
+            {
+              "id": "301d5325-137b-4835-8106-e04180d6e363",
+              "name": "replyToken",
+              "value": "={{ $json.replyToken }}",
+              "type": "string"
             }
           ]
         },
@@ -236,38 +247,6 @@
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
-          "parameters": [
-            {}
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ \n  { \n      \"replyToken\": $('提取訊息_Code').first().json.replyToken, \n      \"messages\": [ { \"type\": \"text\", \"text\": $json.text } ] \n  } \n}}",
-        "options": {}
-      },
-      "id": "877c150b-bd02-4bd0-af3c-fd59de417f46",
-      "name": "回覆文字訊息",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        544,
-        0
-      ],
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "cEj9pNdgb8tJ3YVR",
-          "name": "n8n_auth"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.line.me/v2/bot/message/reply",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
           "parameters": []
         },
         "sendBody": true,
@@ -305,25 +284,19 @@
     },
     {
       "parameters": {
-        "promptType": "define",
-        "text": "={{ $json.messageText }}",
-        "messages": {
-          "messageValues": [
-            {
-              "message": "=## role: 你是一個line的機器人\n## task: 回應使用者\n## context:\n- 現在使用者是用line和你對話\n## constraint:\n- 必需要客氣有禮貌\n- 回應的第一句,必需是\"親愛的顧客:\"\n- 最後一句是我們的客服人員會快速和你聯絡\n- 100字以內\n## format:\n適合顯示在line的純文字格式"
-            }
-          ]
-        },
-        "batching": {}
+        "inputText": "=messageType:{{ $json.messageType }}\n客戶反應{{ $json.messageText}}",
+        "options": {
+          "includeDetailedResults": true
+        }
       },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.9,
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1,
       "position": [
-        224,
-        0
+        192,
+        -32
       ],
-      "id": "80115eb6-a38e-44cf-96bf-847b1e64cc16",
-      "name": "Basic LLM Chain"
+      "id": "cce4506a-3c72-46f6-bfeb-e67c86a44fa1",
+      "name": "Sentiment Analysis"
     },
     {
       "parameters": {
@@ -333,85 +306,115 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
-        224,
+        272,
         192
       ],
-      "id": "5c1c3bed-e44b-4c5c-a236-14b0e51dec9b",
-      "name": "Ollama Chat Model",
+      "id": "a8df8e68-8130-41c2-966d-bb86272bc8df",
+      "name": "Ollama Chat Model1",
       "credentials": {
         "ollamaApi": {
           "id": "5iUijcDKKWPcDacM",
           "name": "Ollama"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ \n  { \n      \"replyToken\": $('提取訊息_Code').first().json.replyToken, \n      \"messages\": [ { \"type\": \"text\", \"text\": \"謝謝鼓勵！\" } ] \n  } \n}}",
+        "options": {}
+      },
+      "id": "877c150b-bd02-4bd0-af3c-fd59de417f46",
+      "name": "正向反應",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        576,
+        -304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cEj9pNdgb8tJ3YVR",
+          "name": "n8n_auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ \n  { \n      \"replyToken\": $('提取訊息_Code').first().json.replyToken, \n      \"messages\": [ { \"type\": \"text\", \"text\": \"謝謝來信\" } ] \n  } \n}}",
+        "options": {}
+      },
+      "id": "304873d6-8de1-434c-b74c-28fd60dff05d",
+      "name": "一般反應",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        592,
+        -96
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cEj9pNdgb8tJ3YVR",
+          "name": "n8n_auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ \n  { \n      \"replyToken\": $('提取訊息_Code').first().json.replyToken, \n      \"messages\": [ { \"type\": \"text\", \"text\": \"非常抱歉！\" } ] \n  } \n}}",
+        "options": {}
+      },
+      "id": "c06eb35c-fdcb-47e3-8d6b-863c6555241f",
+      "name": "負向回應",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        608,
+        96
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cEj9pNdgb8tJ3YVR",
+          "name": "n8n_auth"
+        }
+      }
     }
   ],
-  "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
-            "user-agent": "LineBotWebhook/2.0",
-            "content-length": "863",
-            "content-type": "application/json; charset=utf-8",
-            "x-forwarded-for": "147.92.150.198",
-            "x-forwarded-host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
-            "x-forwarded-proto": "https",
-            "x-line-signature": "1rCLx5l0AS2FPMMRHJWI/WhNdQqpzr+pboYlzGhKqsY=",
-            "accept-encoding": "gzip"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "destination": "U881b8522859a69bb0889af6ac7fc42e4",
-            "events": [
-              {
-                "type": "message",
-                "message": {
-                  "type": "text",
-                  "id": "630423433419161758",
-                  "quoteToken": "HRy7tSp-DkLOSOdiF9uYYzXiEAzwtAdAtv7se4-xxNIdbA0pDYhOKcQZ32fNHU-oFqSiVKjns5dzRPkpdZq7t791sEeIAVvr3TIhlTeeb8JGgKF-Vewy89k4UDrKLHucIiX1kMANfzJ2pVbn-NMung",
-                  "markAsReadToken": "LxihoomNLdwlkh7zbzZrnVGBuJYgl5D8QlPNQkgzwBZ5LARNUD6jFAFs_Hj5JTZe9URRrnQnabtI6fyFFd5-ldoUjN81ZW4LrJyHmbOg7tN4dEp0W7zXpuuRoWvxfBCXXxEenlBSeWX17eF9SiqgWCPNbhSRrGwl8XQirhhxmNcHatX0vMGTx_69teBk_xoARG6saZ2JPyxyzaY1PV_mFw",
-                  "text": "天空為什麼是藍的?"
-                },
-                "webhookEventId": "01M1R755CEG23XSGKWQ8H9D1J4",
-                "deliveryContext": {
-                  "isRedelivery": false
-                },
-                "timestamp": 1788592952211,
-                "source": {
-                  "type": "group",
-                  "groupId": "C212aacf4552d39b3f0882d53e9204d3f",
-                  "userId": "U0b2c8c2e38246e614e35d4e9fb8d8e81"
-                },
-                "replyToken": "7960707c2fb740a18d631c2519743a8f",
-                "mode": "active"
-              }
-            ]
-          },
-          "webhookUrl": "https://superinnocent-hillary-unwholesome.ngrok-free.dev/webhook/line_bot",
-          "executionMode": "production"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
-    "處理文字訊息": [
-      {
-        "json": {
-          "messageType": "text",
-          "messageText": "天空為什麼是藍的?",
-          "replyToken": "7960707c2fb740a18d631c2519743a8f",
-          "handledType": "text_message"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
   "connections": {
     "Webhook": {
       "main": [
@@ -465,7 +468,7 @@
       "main": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Sentiment Analysis",
             "type": "main",
             "index": 0
           }
@@ -527,22 +530,36 @@
         ]
       ]
     },
-    "Basic LLM Chain": {
+    "Sentiment Analysis": {
       "main": [
         [
           {
-            "node": "回覆文字訊息",
+            "node": "正向反應",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "一般反應",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "負向回應",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Ollama Chat Model": {
+    "Ollama Chat Model1": {
       "ai_languageModel": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Sentiment Analysis",
             "type": "ai_languageModel",
             "index": 0
           }
@@ -550,16 +567,55 @@
       ]
     }
   },
-  "active": false,
-  "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate"
+  "pinData": {
+    "Webhook": [
+      {
+        "headers": {
+          "host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
+          "user-agent": "LineBotWebhook/2.0",
+          "content-length": "851",
+          "content-type": "application/json; charset=utf-8",
+          "x-forwarded-for": "147.92.150.198",
+          "x-forwarded-host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
+          "x-forwarded-proto": "https",
+          "x-line-signature": "Q5Zbuw2/aQ+fL5kK2QWzZB5Pu9FMAIvKmnJ7gZ/F1XQ=",
+          "accept-encoding": "gzip"
+        },
+        "params": {},
+        "query": {},
+        "body": {
+          "destination": "U881b8522859a69bb0889af6ac7fc42e4",
+          "events": [
+            {
+              "type": "message",
+              "message": {
+                "type": "text",
+                "id": "630428308005716277",
+                "quoteToken": "ggquCpVBYExmwPkWVcs7IcJf-WaxXAtt5rn1l5O9bOWczK8-q68AljgJk3elakR9O2leY8HbwlCDK1n467aIJrp5H9X0hlNk39L6kyxFbgsLOIoCTI67SQNyWicv2ZqK9i4dDZfx5-1GYcJKqrCQxA",
+                "markAsReadToken": "5JpwFYTn5k-ASFnx2fC7vQUfvPV8uWBji43FpfK72GqKpkJnpaFhaDDy4RY9foXYBhAlI4VR8aWPpv8qkmTqLnH1nrZ9CJYH5bSilwUlhQJDvjY7gbLbrD_mzO2k4WJ10UCpQ0YJtFbYdvWZnUQqXSeNFai-WrghkTx7Bqe-Uum8LBvmxb-Y3IL_eXJlFku6GiRn56KU3x5KI0mo_wTGKA",
+                "text": "好吃!好吃"
+              },
+              "webhookEventId": "01M1R9XTSAJJD1RK8Z4WDDP2XW",
+              "deliveryContext": {
+                "isRedelivery": false
+              },
+              "timestamp": 1788595857711,
+              "source": {
+                "type": "group",
+                "groupId": "C212aacf4552d39b3f0882d53e9204d3f",
+                "userId": "U0b2c8c2e38246e614e35d4e9fb8d8e81"
+              },
+              "replyToken": "0d5d0a3215e345cca5cded5e8c0ef03b",
+              "mode": "active"
+            }
+          ]
+        },
+        "webhookUrl": "https://superinnocent-hillary-unwholesome.ngrok-free.dev/webhook/line_bot",
+        "executionMode": "production"
+      }
+    ]
   },
-  "versionId": "06c113a6-46b2-40b4-b782-fede3f6e164e",
   "meta": {
     "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
-  },
-  "nodeGroups": [],
-  "id": "ajfUkS7WofAJBQ1y",
-  "tags": []
+  }
 }
