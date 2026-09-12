@@ -11,7 +11,7 @@
       "typeVersion": 2.1,
       "position": [
         -320,
-        -176
+        -224
       ],
       "id": "78d58cd8-3860-4736-942d-46ba7ef53445",
       "name": "Webhook",
@@ -26,8 +26,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -16,
-        -256
+        -96,
+        -320
       ],
       "id": "98755107-4de3-4774-9955-050c01f7e8f8",
       "name": "Respond to Webhook"
@@ -75,31 +75,9 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        96,
-        -112
+        -96,
+        -128
       ]
-    },
-    {
-      "parameters": {
-        "model": "gpt-oss:20b-cloud",
-        "options": {
-          "temperature": 0.1
-        }
-      },
-      "id": "40fdc9ea-1ae4-4e9f-bb1e-cd902e7f4435",
-      "name": "Ollama Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
-      "typeVersion": 1,
-      "position": [
-        288,
-        64
-      ],
-      "credentials": {
-        "ollamaApi": {
-          "id": "5iUijcDKKWPcDacM",
-          "name": "Ollama"
-        }
-      }
     },
     {
       "parameters": {
@@ -111,9 +89,133 @@
       "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
       "typeVersion": 1,
       "position": [
-        288,
+        128,
         -128
       ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=客戶訊息:{{ $json.messageText }}\n\n請以兄弟飯店客服的身分,寄作一則簡短、真誠的感謝回應,感謝客戶的彌詰或支持。"
+      },
+      "id": "3aaacf46-dbcc-4cbb-8b43-563ae0f56a05",
+      "name": "正面回應",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        576,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=客戶訊息:{{ $json.messageText }}\n\n請以兄弟飯店客服的身分,寄作一則誠懇的道歉回應,並明確告知客戶會立即與他聯絡處理問題。"
+      },
+      "id": "668577ca-dab3-4fef-be3a-16667fd86fcc",
+      "name": "負面回應",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        576,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=客戶訊息:{{ $json.messageText }}\n\n請以兄弟飯店客服的身分,寄作一則客氣有禮的回應。"
+      },
+      "id": "997fba83-4543-4ecf-902c-9d936b249126",
+      "name": "中性回應",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        576,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "28f880cd-1c4a-412c-b580-bbf10d338c52",
+              "name": "回應",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        992,
+        -160
+      ],
+      "id": "c158215e-0b50-4402-9e8a-e692bbd542ea",
+      "name": "檢查回應"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/reply",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer 請在這裡貼上你的Channel Access Token"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ replyToken: $('接收line傳來的資訊').item.json.replyToken, messages: [ { type: 'text', text: $json.回應 } ] }) }}",
+        "options": {}
+      },
+      "id": "08e77cf5-5307-46ed-ac59-af33dc971497",
+      "name": "回傳LINE訊息",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1184,
+        -176
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HHGO2cH8f929z43d",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.8-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        -304
+      ],
+      "id": "ba07f3ff-b2d2-4f98-b913-5f30853613b9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "PaywFftaoUrAn4lP",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
     }
   ],
   "connections": {
@@ -144,22 +246,99 @@
         ]
       ]
     },
-    "Ollama Model": {
+    "情緒分析": {
+      "main": [
+        [
+          {
+            "node": "正面回應",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "負面回應",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "中性回應",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "正面回應": {
+      "main": [
+        [
+          {
+            "node": "檢查回應",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "負面回應": {
+      "main": [
+        [
+          {
+            "node": "檢查回應",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "中性回應": {
+      "main": [
+        [
+          {
+            "node": "檢查回應",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "檢查回應": {
+      "main": [
+        [
+          {
+            "node": "回傳LINE訊息",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
       "ai_languageModel": [
         [
           {
             "node": "情緒分析",
             "type": "ai_languageModel",
             "index": 0
+          },
+          {
+            "node": "正面回應",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "負面回應",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "中性回應",
+            "type": "ai_languageModel",
+            "index": 0
           }
         ]
-      ]
-    },
-    "情緒分析": {
-      "main": [
-        [],
-        [],
-        []
       ]
     }
   },
@@ -167,15 +346,21 @@
     "Webhook": [
       {
         "headers": {
-          "host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
+          "host": "n8n.roberthsu20030301.site",
           "user-agent": "LineBotWebhook/2.0",
-          "content-length": "862",
+          "content-length": "853",
+          "accept-encoding": "gzip, br",
+          "cdn-loop": "cloudflare; loops=1",
+          "cf-connecting-ip": "147.92.150.198",
+          "cf-ipcountry": "JP",
+          "cf-ray": "a39cf03d5b1ae011-NRT",
+          "cf-visitor": "{\"scheme\":\"https\"}",
+          "cf-warp-tag-id": "a4581e46-6d09-437f-ab45-9148212decd6",
+          "connection": "keep-alive",
           "content-type": "application/json; charset=utf-8",
           "x-forwarded-for": "147.92.150.198",
-          "x-forwarded-host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
           "x-forwarded-proto": "https",
-          "x-line-signature": "2qUBlCLYOMnFddJ+jmfTCpqeKvj+2RZLB6e/2zI+fHs=",
-          "accept-encoding": "gzip"
+          "x-line-signature": "SIkB+wlNvpZLs1XAT3hwuA+G/O85Aov/qGiq5pK7vHs="
         },
         "params": {},
         "query": {},
@@ -186,27 +371,27 @@
               "type": "message",
               "message": {
                 "type": "text",
-                "id": "631414614176825536",
-                "quoteToken": "pdKrUI-ZFsFKw1w_W_okoqSG1fGz1TNNAOuc1y43r04MIw_9Gf7MApupjNx_UzPpqAFlg3eGLyuSrl8vDcOp1fZz6BuDSYDOK48-Yelg4rrNNR2qQOpwStMAdQtVbMr3CAEk3a29t2-1MSqJ1pnHVg",
-                "markAsReadToken": "xtmt0tK6Jy5_7bA6vmscwx5oR1-JKB6JMe7TNtG8Y36kDYrgJsd0BjeBjRrxgudYI3lLMwzc09Hyyo2xfqI_XWolODGub1gG5dthgyDvEZfxLU7V6-4Wvw9FprwB0ffqwJDQvAvQR5DeIqobgclrW1fkTDgTDTSgJB6-x44irIL71nUOw6o-qx8TpY9IkGFSXjMe0viJ_GLRsiZvcTR_yA",
-                "text": "天空為什麼是藍的"
+                "id": "631434192919724482",
+                "quoteToken": "TlIWVszgnYPedH452yZ0c6LhAZ2MpYy3CFVEBKu1GlyKKNL-a5oYx4wjPBUabo_w5JUMlrioJqQEslx_JFKAuoFKwaUavBlFwnpcr6vjU7JenrVgDm5k-qsHBEpPfWr2RwTMF-42qweCZJP10mB65w",
+                "markAsReadToken": "3oPOJpkXG7Rpe3jMQs9zVV8Rao8JPb9t2BuQq70Q_jmMixq0DFvcyy8ogfWtD1H2sL1qMseNzLBIVsO-EA6SIWCNgb8RdrcFWf6KtDWb1ncCo_oo0pNsLVXgDjB_ak3tHuXX6Yl1pmzG85Y819FhS9HxeFS6J7bS1dcLzQi5H7c4Ij0cWGvjouCqslrlJrkjbqxXWDFtJtwAYCUL2k_3nA",
+                "text": "東西很好吃"
               },
-              "webhookEventId": "01M29TJMCQEAZNPMB5PRMKXYA0",
+              "webhookEventId": "01M2A5PRERET3D4BJEKB3XYJCR",
               "deliveryContext": {
                 "isRedelivery": false
               },
-              "timestamp": 1789183741852,
+              "timestamp": 1789195411872,
               "source": {
                 "type": "group",
                 "groupId": "C212aacf4552d39b3f0882d53e9204d3f",
                 "userId": "U0b2c8c2e38246e614e35d4e9fb8d8e81"
               },
-              "replyToken": "b264716d32674752a7f935be84e9f348",
+              "replyToken": "a0b4f592b2aa4defa077225f922cd351",
               "mode": "active"
             }
           ]
         },
-        "webhookUrl": "https://superinnocent-hillary-unwholesome.ngrok-free.dev/webhook/line_bot1",
+        "webhookUrl": "https://n8n.roberthsu20030301.site/webhook/line_bot1",
         "executionMode": "production"
       }
     ]
@@ -214,6 +399,7 @@
   "meta": {
     "aiBuilderAssisted": true,
     "builderVariant": "mcp",
+    "templateCredsSetupCompleted": true,
     "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
   }
 }
