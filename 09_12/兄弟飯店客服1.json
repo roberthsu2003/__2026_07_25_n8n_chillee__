@@ -10,8 +10,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -320,
-        -224
+        -352,
+        -80
       ],
       "id": "78d58cd8-3860-4736-942d-46ba7ef53445",
       "name": "Webhook",
@@ -26,8 +26,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -96,
-        -320
+        -128,
+        -176
       ],
       "id": "98755107-4de3-4774-9955-050c01f7e8f8",
       "name": "Respond to Webhook"
@@ -75,8 +75,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -96,
-        -128
+        -128,
+        16
       ]
     },
     {
@@ -89,8 +89,8 @@
       "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
       "typeVersion": 1,
       "position": [
-        128,
-        -128
+        96,
+        16
       ]
     },
     {
@@ -103,8 +103,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.6,
       "position": [
-        576,
-        -368
+        544,
+        -224
       ]
     },
     {
@@ -117,8 +117,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.6,
       "position": [
-        576,
-        -128
+        544,
+        16
       ]
     },
     {
@@ -131,8 +131,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.6,
       "position": [
-        576,
-        64
+        512,
+        208
       ]
     },
     {
@@ -152,8 +152,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        992,
-        -160
+        960,
+        -16
       ],
       "id": "c158215e-0b50-4402-9e8a-e692bbd542ea",
       "name": "檢查回應"
@@ -170,10 +170,6 @@
             {
               "name": "Content-Type",
               "value": "application/json"
-            },
-            {
-              "name": "Authorization",
-              "value": "Bearer 請在這裡貼上你的Channel Access Token"
             }
           ]
         },
@@ -187,8 +183,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        1184,
-        -176
+        1152,
+        -32
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -205,8 +201,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        240,
-        -304
+        208,
+        -160
       ],
       "id": "ba07f3ff-b2d2-4f98-b913-5f30853613b9",
       "name": "Google Gemini Chat Model",
@@ -214,6 +210,41 @@
         "googlePalmApi": {
           "id": "PaywFftaoUrAn4lP",
           "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ to: 'U0b2c8c2e38246e614e35d4e9fb8d8e81', messages: [ { type: 'text', text: '⚠️ 客服負評通知\\n\\n客戶訊息：' + $('情緒分析').item.json.messageText + '\\n\\n系統回覆：' + $json.text + '\\n\\n客戶ID：' + $('情緒分析').item.json.userId } ] }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        960,
+        240
+      ],
+      "id": "6fb45c00-f3bc-4bb8-9a9a-9a6e84e55fc0",
+      "name": "回傳給主管",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HHGO2cH8f929z43d",
+          "name": "Header Auth account"
         }
       }
     }
@@ -257,14 +288,14 @@
         ],
         [
           {
-            "node": "負面回應",
+            "node": "中性回應",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "中性回應",
+            "node": "負面回應",
             "type": "main",
             "index": 0
           }
@@ -287,6 +318,11 @@
         [
           {
             "node": "檢查回應",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "回傳給主管",
             "type": "main",
             "index": 0
           }
@@ -353,14 +389,14 @@
           "cdn-loop": "cloudflare; loops=1",
           "cf-connecting-ip": "147.92.150.198",
           "cf-ipcountry": "JP",
-          "cf-ray": "a39cf03d5b1ae011-NRT",
+          "cf-ray": "a39d450c9ef1c738-NRT",
           "cf-visitor": "{\"scheme\":\"https\"}",
           "cf-warp-tag-id": "a4581e46-6d09-437f-ab45-9148212decd6",
           "connection": "keep-alive",
           "content-type": "application/json; charset=utf-8",
           "x-forwarded-for": "147.92.150.198",
           "x-forwarded-proto": "https",
-          "x-line-signature": "SIkB+wlNvpZLs1XAT3hwuA+G/O85Aov/qGiq5pK7vHs="
+          "x-line-signature": "nkNJJ6exyl89uSSgBzlbs0/e92oIvFA0aYr1uo5FxWU="
         },
         "params": {},
         "query": {},
@@ -371,22 +407,22 @@
               "type": "message",
               "message": {
                 "type": "text",
-                "id": "631434192919724482",
-                "quoteToken": "TlIWVszgnYPedH452yZ0c6LhAZ2MpYy3CFVEBKu1GlyKKNL-a5oYx4wjPBUabo_w5JUMlrioJqQEslx_JFKAuoFKwaUavBlFwnpcr6vjU7JenrVgDm5k-qsHBEpPfWr2RwTMF-42qweCZJP10mB65w",
-                "markAsReadToken": "3oPOJpkXG7Rpe3jMQs9zVV8Rao8JPb9t2BuQq70Q_jmMixq0DFvcyy8ogfWtD1H2sL1qMseNzLBIVsO-EA6SIWCNgb8RdrcFWf6KtDWb1ncCo_oo0pNsLVXgDjB_ak3tHuXX6Yl1pmzG85Y819FhS9HxeFS6J7bS1dcLzQi5H7c4Ij0cWGvjouCqslrlJrkjbqxXWDFtJtwAYCUL2k_3nA",
-                "text": "東西很好吃"
+                "id": "631440020938424899",
+                "quoteToken": "yM3fkWJQn2B4eVOulEqZcxFHU1llgSHTttXOCTn5vTw-T6FD1hlCvni4xNf-xEGxIF7XNpAI71fXCaWvqfBBMT8uMkaa8QSA6D1lR4TmkJMbOU6H_LuGaeoNDpgu5DfZbytjRpeFLbZxxudXOapL0g",
+                "markAsReadToken": "8BvE8kPzSGFBa1Gqgge22-sjkfp8pZ1tYkcZT56nF-slGjVFJYQqvsxXTRjw9lreO_EjUBSUuhdg65dhvnilDzyfIq1D3wkmrC1mvEPlAIBuJEqAWud7YGJpdeiofjpR2ooHtx81Ud_g3rlIURCbulzXNeZL4hCkE_g7g-CHPftHrCcfptKU5eViRIxcd484v2fEJfXa3aF-xYWN9K1iew",
+                "text": "東西不好吃"
               },
-              "webhookEventId": "01M2A5PRERET3D4BJEKB3XYJCR",
+              "webhookEventId": "01M2A90RV8MB0Y07H31JPQC17A",
               "deliveryContext": {
                 "isRedelivery": false
               },
-              "timestamp": 1789195411872,
+              "timestamp": 1789198885466,
               "source": {
                 "type": "group",
                 "groupId": "C212aacf4552d39b3f0882d53e9204d3f",
                 "userId": "U0b2c8c2e38246e614e35d4e9fb8d8e81"
               },
-              "replyToken": "a0b4f592b2aa4defa077225f922cd351",
+              "replyToken": "afbb872430f5441ba30dcee3898d61c5",
               "mode": "active"
             }
           ]
