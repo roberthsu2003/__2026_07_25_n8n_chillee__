@@ -1,0 +1,114 @@
+{
+  "name": "兄弟飯店客服1",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "line_bot1",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -176,
+        -16
+      ],
+      "id": "78d58cd8-3860-4736-942d-46ba7ef53445",
+      "name": "Webhook",
+      "webhookId": "1d0aa7d1-1a2c-488d-84df-c144ccdab594"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"ok\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        48,
+        -144
+      ],
+      "id": "98755107-4de3-4774-9955-050c01f7e8f8",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
+            "user-agent": "LineBotWebhook/2.0",
+            "content-length": "815",
+            "content-type": "application/json; charset=utf-8",
+            "x-forwarded-for": "147.92.150.195",
+            "x-forwarded-host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
+            "x-forwarded-proto": "https",
+            "x-line-signature": "wurhyXY700sSITE97l/6DpEmPb4wVbo+VR64yQGj508=",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "destination": "U881b8522859a69bb0889af6ac7fc42e4",
+            "events": [
+              {
+                "type": "message",
+                "message": {
+                  "type": "text",
+                  "id": "631407817928213069",
+                  "quoteToken": "Pq4u1m1CTMfP_eXDN3l_Ly0wgol9cF_z5PVIeR_MrH0LSotgI9RPIff_geIkMou3P5p66uusdTttNLeQIGSlNLMNAUxv9R49xqjUZybbpLDysu53DEWxD9CmnoOKzMrUlFjeSLMDdtLxJU0Nz1pwSg",
+                  "markAsReadToken": "jnq1STEaugaGdxlr5_q67ecKeYHwVneJ8es4GONnWek1znXVAbmimTZ9AjWuODoGcHJnhX9IOaOujf8ErXyHISceh0C14X86gRKi51FKFXiydyb5HZWISwJC6SWLqigdaPs7vJyth0DmIj6U19aTARLNfwVbzJf-Fonw9_JpfnRlEAYEbdBI6xaJtNx0Vy1gatu99Ng6fhGp6agqw3u3TQ",
+                  "text": "今天台北是星期幾"
+                },
+                "webhookEventId": "01M29PQ08SGPQ56GS16F6P1WYY",
+                "deliveryContext": {
+                  "isRedelivery": false
+                },
+                "timestamp": 1789179691073,
+                "source": {
+                  "type": "user",
+                  "userId": "U0b2c8c2e38246e614e35d4e9fb8d8e81"
+                },
+                "replyToken": "9352b66fed884d6a86fc3484840d650c",
+                "mode": "active"
+              }
+            ]
+          },
+          "webhookUrl": "https://superinnocent-hillary-unwholesome.ngrok-free.dev/webhook/line_bot1",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "14c0dbf6-44d2-454f-99ba-f17c5c049c43",
+  "meta": {
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  },
+  "nodeGroups": [],
+  "id": "pGHDWYFq9mMmICON",
+  "tags": []
+}
