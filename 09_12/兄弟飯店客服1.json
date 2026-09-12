@@ -11,7 +11,7 @@
       "typeVersion": 2.1,
       "position": [
         -352,
-        -80
+        32
       ],
       "id": "78d58cd8-3860-4736-942d-46ba7ef53445",
       "name": "Webhook",
@@ -27,7 +27,7 @@
       "typeVersion": 1.5,
       "position": [
         -128,
-        -176
+        -16
       ],
       "id": "98755107-4de3-4774-9955-050c01f7e8f8",
       "name": "Respond to Webhook"
@@ -76,7 +76,7 @@
       "typeVersion": 3.4,
       "position": [
         -128,
-        16
+        176
       ]
     },
     {
@@ -90,7 +90,7 @@
       "typeVersion": 1,
       "position": [
         96,
-        16
+        176
       ]
     },
     {
@@ -103,8 +103,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.6,
       "position": [
-        544,
-        -224
+        448,
+        -176
       ]
     },
     {
@@ -117,8 +117,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.6,
       "position": [
-        544,
-        16
+        448,
+        224
       ]
     },
     {
@@ -131,8 +131,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.6,
       "position": [
-        512,
-        208
+        448,
+        416
       ]
     },
     {
@@ -152,8 +152,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.5,
       "position": [
-        960,
-        -16
+        800,
+        128
       ],
       "id": "c158215e-0b50-4402-9e8a-e692bbd542ea",
       "name": "檢查回應"
@@ -183,8 +183,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        1152,
-        -32
+        1024,
+        -16
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -201,8 +201,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        208,
-        -160
+        528,
+        64
       ],
       "id": "ba07f3ff-b2d2-4f98-b913-5f30853613b9",
       "name": "Google Gemini Chat Model",
@@ -236,8 +236,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        960,
-        240
+        800,
+        368
       ],
       "id": "6fb45c00-f3bc-4bb8-9a9a-9a6e84e55fc0",
       "name": "回傳給主管",
@@ -247,6 +247,90 @@
           "name": "Header Auth account"
         }
       }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "cachedResultName": "客服對話紀錄",
+          "mode": "id",
+          "value": "WU9eaqEIwxfYTlvX"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "botResponse": "={{ $json.回應 }}",
+            "customerMessage": "={{ $('情緒分析').item.json.messageText }}",
+            "sentiment": "={{ $('情緒分析').item.json.sentimentAnalysis.category }}",
+            "timestamp": "={{ $now.toISO() }}",
+            "userId": "={{ $('情緒分析').item.json.userId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "userId",
+              "displayName": "userId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "customerMessage",
+              "displayName": "customerMessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sentiment",
+              "displayName": "sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "botResponse",
+              "displayName": "botResponse",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "002b04b2-bcfe-4bd9-b17a-51fa94e01395",
+      "name": "記錄對話",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1024,
+        176
+      ]
     }
   ],
   "connections": {
@@ -345,6 +429,11 @@
         [
           {
             "node": "回傳LINE訊息",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "記錄對話",
             "type": "main",
             "index": 0
           }
