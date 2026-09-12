@@ -26,8 +26,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        128,
-        -224
+        -16,
+        -256
       ],
       "id": "98755107-4de3-4774-9955-050c01f7e8f8",
       "name": "Respond to Webhook"
@@ -75,8 +75,44 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -64,
-        -16
+        96,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b-cloud",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "40fdc9ea-1ae4-4e9f-bb1e-cd902e7f4435",
+      "name": "Ollama Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        288,
+        64
+      ],
+      "credentials": {
+        "ollamaApi": {
+          "id": "5iUijcDKKWPcDacM",
+          "name": "Ollama"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.messageText }}",
+        "options": {}
+      },
+      "id": "36342c31-50bb-4c6c-b45d-37ebda8a52b0",
+      "name": "情緒分析",
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1,
+      "position": [
+        288,
+        -128
       ]
     }
   ],
@@ -99,6 +135,30 @@
     },
     "接收line傳來的資訊": {
       "main": [
+        [
+          {
+            "node": "情緒分析",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "情緒分析",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "情緒分析": {
+      "main": [
+        [],
+        [],
         []
       ]
     }
@@ -109,12 +169,12 @@
         "headers": {
           "host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
           "user-agent": "LineBotWebhook/2.0",
-          "content-length": "815",
+          "content-length": "862",
           "content-type": "application/json; charset=utf-8",
-          "x-forwarded-for": "147.92.150.195",
+          "x-forwarded-for": "147.92.150.198",
           "x-forwarded-host": "superinnocent-hillary-unwholesome.ngrok-free.dev",
           "x-forwarded-proto": "https",
-          "x-line-signature": "wurhyXY700sSITE97l/6DpEmPb4wVbo+VR64yQGj508=",
+          "x-line-signature": "2qUBlCLYOMnFddJ+jmfTCpqeKvj+2RZLB6e/2zI+fHs=",
           "accept-encoding": "gzip"
         },
         "params": {},
@@ -126,21 +186,22 @@
               "type": "message",
               "message": {
                 "type": "text",
-                "id": "631407817928213069",
-                "quoteToken": "Pq4u1m1CTMfP_eXDN3l_Ly0wgol9cF_z5PVIeR_MrH0LSotgI9RPIff_geIkMou3P5p66uusdTttNLeQIGSlNLMNAUxv9R49xqjUZybbpLDysu53DEWxD9CmnoOKzMrUlFjeSLMDdtLxJU0Nz1pwSg",
-                "markAsReadToken": "jnq1STEaugaGdxlr5_q67ecKeYHwVneJ8es4GONnWek1znXVAbmimTZ9AjWuODoGcHJnhX9IOaOujf8ErXyHISceh0C14X86gRKi51FKFXiydyb5HZWISwJC6SWLqigdaPs7vJyth0DmIj6U19aTARLNfwVbzJf-Fonw9_JpfnRlEAYEbdBI6xaJtNx0Vy1gatu99Ng6fhGp6agqw3u3TQ",
-                "text": "今天台北是星期幾"
+                "id": "631414614176825536",
+                "quoteToken": "pdKrUI-ZFsFKw1w_W_okoqSG1fGz1TNNAOuc1y43r04MIw_9Gf7MApupjNx_UzPpqAFlg3eGLyuSrl8vDcOp1fZz6BuDSYDOK48-Yelg4rrNNR2qQOpwStMAdQtVbMr3CAEk3a29t2-1MSqJ1pnHVg",
+                "markAsReadToken": "xtmt0tK6Jy5_7bA6vmscwx5oR1-JKB6JMe7TNtG8Y36kDYrgJsd0BjeBjRrxgudYI3lLMwzc09Hyyo2xfqI_XWolODGub1gG5dthgyDvEZfxLU7V6-4Wvw9FprwB0ffqwJDQvAvQR5DeIqobgclrW1fkTDgTDTSgJB6-x44irIL71nUOw6o-qx8TpY9IkGFSXjMe0viJ_GLRsiZvcTR_yA",
+                "text": "天空為什麼是藍的"
               },
-              "webhookEventId": "01M29PQ08SGPQ56GS16F6P1WYY",
+              "webhookEventId": "01M29TJMCQEAZNPMB5PRMKXYA0",
               "deliveryContext": {
                 "isRedelivery": false
               },
-              "timestamp": 1789179691073,
+              "timestamp": 1789183741852,
               "source": {
-                "type": "user",
+                "type": "group",
+                "groupId": "C212aacf4552d39b3f0882d53e9204d3f",
                 "userId": "U0b2c8c2e38246e614e35d4e9fb8d8e81"
               },
-              "replyToken": "9352b66fed884d6a86fc3484840d650c",
+              "replyToken": "b264716d32674752a7f935be84e9f348",
               "mode": "active"
             }
           ]
