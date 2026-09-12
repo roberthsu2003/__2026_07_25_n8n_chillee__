@@ -1,0 +1,133 @@
+{
+  "name": "檢視客戶留言記錄",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "records",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f750ad7a-fd3a-4386-a733-f6b823191a96",
+      "name": "Webhook",
+      "webhookId": "c67ff6a0-781d-40d9-b7fc-89b124ff284d"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "cachedResultName": "客服對話紀錄",
+          "mode": "id",
+          "value": "WU9eaqEIwxfYTlvX"
+        },
+        "returnAll": true,
+        "orderBy": true,
+        "orderByColumn": "timestamp"
+      },
+      "id": "2499d16b-0bec-4165-a0eb-7db127edc4df",
+      "name": "取得客服對話紀錄",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "var records = $input.all().map(function(i){ return i.json; });\nvar now = Date.now();\nvar windowMs = 24*60*60*1000;\nvar filtered = records.filter(function(r){\n  var t = new Date(r.timestamp).getTime();\n  return (now - t) <= windowMs;\n});\nfiltered.sort(function(a,b){ return new Date(b.timestamp) - new Date(a.timestamp); });\nvar encoded = Buffer.from(JSON.stringify(filtered)).toString(\"base64\");\nvar template = \"<!DOCTYPE html>\\n<html lang=\\\"zh-Hant\\\">\\n<head>\\n<meta charset=\\\"UTF-8\\\">\\n<meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n<title>兄弟大飯店 · 賓客回饋紀錄</title>\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.googleapis.com\\\">\\n<link rel=\\\"preconnect\\\" href=\\\"https://fonts.gstatic.com\\\" crossorigin>\\n<link href=\\\"https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap\\\" rel=\\\"stylesheet\\\">\\n<style>\\n  :root{\\n    --ink:#1C2A33;\\n    --ink-deep:#141F27;\\n    --ivory:#F3EFE6;\\n    --ivory-dim:#C9C2B4;\\n    --brass:#B08A4E;\\n    --brass-soft:#7C6640;\\n    --sage:#7FA083;\\n    --rust:#C07557;\\n    --stone:#9C978A;\\n    --line: rgba(176,138,78,0.28);\\n  }\\n  *{box-sizing:border-box;}\\n  html,body{margin:0;padding:0;}\\n  body{\\n    background: radial-gradient(ellipse at top, #22323C 0%, var(--ink) 45%, var(--ink-deep) 100%);\\n    color: var(--ivory);\\n    font-family: \\\"Noto Sans TC\\\", sans-serif;\\n    min-height:100vh;\\n    padding: 56px 20px 90px;\\n  }\\n  .page{ max-width: 720px; margin: 0 auto; }\\n  header{\\n    display:flex; align-items:flex-end; justify-content:space-between; gap:20px;\\n    padding-bottom: 22px; border-bottom: 1px solid var(--line); margin-bottom: 6px;\\n  }\\n  .brand{ display:flex; align-items:center; gap:16px; }\\n  .mark{\\n    width:46px;height:46px; border:1px solid var(--brass); border-radius:50%;\\n    display:flex;align-items:center;justify-content:center;\\n    font-family:\\\"Noto Serif TC\\\", serif; font-weight:600; font-size:19px; color:var(--brass); flex-shrink:0;\\n  }\\n  h1{\\n    font-family:\\\"Noto Serif TC\\\", serif; font-weight:600; font-size: 25px;\\n    letter-spacing: 0.04em; margin:0 0 4px; color: var(--ivory);\\n  }\\n  .subtitle{ font-size: 13px; color: var(--ivory-dim); letter-spacing: 0.02em; }\\n  .clock{ text-align:right; font-variant-numeric: tabular-nums; flex-shrink:0; }\\n  .clock .now{ font-family:\\\"Noto Serif TC\\\", serif; font-size: 20px; color: var(--brass); }\\n  .clock .label{ font-size: 12px; color: var(--stone); margin-top: 3px; }\\n  .meta-row{\\n    display:flex; justify-content:space-between; align-items:center;\\n    font-size: 12.5px; color: var(--stone); padding: 16px 2px 34px;\\n  }\\n  .meta-row span.count{ color: var(--ivory-dim); }\\n  .ledger{ position:relative; padding-left: 84px; }\\n  .ledger::before{\\n    content:\\\"\\\"; position:absolute; left: 60px; top: 6px; bottom: 6px; width: 1px;\\n    background: linear-gradient(to bottom, var(--brass) 0%, var(--line) 15%, var(--line) 85%, transparent 100%);\\n  }\\n  .entry{ position:relative; padding-bottom: 40px; }\\n  .entry:last-child{ padding-bottom: 4px; }\\n  .time-marker{ position:absolute; left: -84px; top: 2px; width: 60px; text-align:right; }\\n  .time-marker .clock-time{ font-family:\\\"Noto Serif TC\\\", serif; font-size: 15px; color: var(--ivory); font-variant-numeric: tabular-nums; }\\n  .time-marker .rel{ font-size: 11px; color: var(--stone); margin-top: 2px; }\\n  .dot{\\n    position:absolute; left: 56px; top: 6px; width: 9px;height:9px; border-radius:50%;\\n    background: var(--ink); border: 2px solid var(--brass);\\n  }\\n  .content{ padding-left: 4px; }\\n  .sentiment{\\n    font-size: 12px; letter-spacing: 0.03em; margin-bottom: 8px;\\n    display:inline-flex; align-items:center; gap: 6px;\\n  }\\n  .sentiment .sw{ width:6px;height:6px;border-radius:50%; }\\n  .sentiment.positive{ color: var(--sage); } .sentiment.positive .sw{ background: var(--sage); }\\n  .sentiment.negative{ color: var(--rust); } .sentiment.negative .sw{ background: var(--rust); }\\n  .sentiment.neutral{ color: var(--stone); } .sentiment.neutral .sw{ background: var(--stone); }\\n  .quote{\\n    font-family:\\\"Noto Serif TC\\\", serif; font-size: 16.5px; line-height: 1.75; color: var(--ivory);\\n    white-space: pre-line; margin: 0 0 16px;\\n  }\\n  .quote::before{ content:\\\"「\\\"; color: var(--brass); }\\n  .quote::after{ content:\\\"」\\\"; color: var(--brass); }\\n  .reply{ border-left: 2px solid var(--brass-soft); padding: 2px 0 2px 16px; }\\n  .reply .reply-label{ font-size: 11.5px; color: var(--brass); margin-bottom: 6px; letter-spacing: 0.02em; }\\n  .reply .reply-text{ font-size: 13.5px; line-height: 1.8; color: var(--ivory-dim); white-space: pre-line; font-weight:300; }\\n  .userId{ font-size: 11px; color: var(--brass-soft); margin-top: 12px; font-variant-numeric: tabular-nums; }\\n  .empty{ text-align:center; padding: 70px 20px; color: var(--stone); font-family:\\\"Noto Serif TC\\\", serif; font-size: 16px; }\\n  footer{ text-align:center; margin-top: 50px; font-size: 11.5px; color: var(--brass-soft); letter-spacing: 0.05em; }\\n  @media (max-width: 560px){\\n    .ledger{ padding-left: 58px; } .ledger::before{ left: 34px; } .dot{ left: 30px; }\\n    .time-marker{ left: -58px; width: 40px; }\\n    header{ flex-direction:column; align-items:flex-start; gap:10px; } .clock{ text-align:left; }\\n  }\\n  @media (prefers-reduced-motion: reduce){ *{ animation: none !important; transition: none !important; } }\\n</style>\\n</head>\\n<body>\\n  <div class=\\\"page\\\">\\n    <header>\\n      <div class=\\\"brand\\\">\\n        <div class=\\\"mark\\\">兄</div>\\n        <div>\\n          <h1>兄弟大飯店</h1>\\n          <div class=\\\"subtitle\\\">賓客回饋與客服對話紀錄</div>\\n        </div>\\n      </div>\\n      <div class=\\\"clock\\\">\\n        <div class=\\\"now\\\" id=\\\"nowClock\\\">--:--</div>\\n        <div class=\\\"label\\\" id=\\\"nowDate\\\">----/--/--</div>\\n      </div>\\n    </header>\\n    <div class=\\\"meta-row\\\">\\n      <span>過去 24 小時內的留言 · 依時間新到舊排列</span>\\n      <span class=\\\"count\\\" id=\\\"countLabel\\\">— 則</span>\\n    </div>\\n    <div class=\\\"ledger\\\" id=\\\"ledger\\\"></div>\\n    <div class=\\\"empty\\\" id=\\\"emptyState\\\" style=\\\"display:none;\\\">過去 24 小時內尚無新留言</div>\\n  </div>\\n  <footer>兄弟大飯店 顧客服務團隊</footer>\\n  <script id=\\\"__data\\\" type=\\\"application/json\\\">__DATA_PLACEHOLDER__</script>\\n  <script>\\n    function base64ToUtf8(b64){\\n      var binary = atob(b64);\\n      var bytes = new Uint8Array(binary.length);\\n      for (var i = 0; i < binary.length; i++) { bytes[i] = binary.charCodeAt(i); }\\n      return new TextDecoder('utf-8').decode(bytes);\\n    }\\n    var RECORDS = JSON.parse(base64ToUtf8(document.getElementById('__data').textContent || 'W10='));\\n\\n    function sentimentClass(s){\\n      if(!s) return \\\"neutral\\\";\\n      var v = String(s).toLowerCase();\\n      if(v.indexOf(\\\"pos\\\") !== -1) return \\\"positive\\\";\\n      if(v.indexOf(\\\"neg\\\") !== -1) return \\\"negative\\\";\\n      return \\\"neutral\\\";\\n    }\\n    function sentimentLabel(s){\\n      var cls = sentimentClass(s);\\n      if(cls === \\\"positive\\\") return \\\"正面反饋\\\";\\n      if(cls === \\\"negative\\\") return \\\"負面反饋\\\";\\n      return \\\"中性留言\\\";\\n    }\\n    function relTime(ms){\\n      var diff = Date.now() - ms;\\n      var min = Math.floor(diff/60000);\\n      if(min < 1) return \\\"剛剛\\\";\\n      if(min < 60) return min + \\\" 分鐘前\\\";\\n      var hr = Math.floor(min/60);\\n      if(hr < 24) return hr + \\\" 小時前\\\";\\n      return Math.floor(hr/24) + \\\" 天前\\\";\\n    }\\n    function formatClock(d){\\n      return d.toLocaleTimeString('zh-TW', {hour:'2-digit', minute:'2-digit', hour12:false});\\n    }\\n    function escapeHtml(str){\\n      var div = document.createElement('div');\\n      div.textContent = str || \\\"\\\";\\n      return div.innerHTML;\\n    }\\n\\n    function render(){\\n      var now = Date.now();\\n      var windowMs = 24*60*60*1000;\\n      var items = RECORDS\\n        .map(function(r){ return Object.assign({}, r, { t: new Date(r.timestamp).getTime() }); })\\n        .filter(function(r){ return (now - r.t) <= windowMs; })\\n        .sort(function(a,b){ return b.t - a.t; });\\n\\n      var ledger = document.getElementById('ledger');\\n      var empty = document.getElementById('emptyState');\\n      var countLabel = document.getElementById('countLabel');\\n      ledger.innerHTML = \\\"\\\";\\n      countLabel.textContent = items.length + \\\" 則\\\";\\n\\n      if(items.length === 0){\\n        empty.style.display = \\\"block\\\";\\n        ledger.style.display = \\\"none\\\";\\n        return;\\n      }\\n      empty.style.display = \\\"none\\\";\\n      ledger.style.display = \\\"block\\\";\\n\\n      items.forEach(function(item){\\n        var d = new Date(item.t);\\n        var cls = sentimentClass(item.sentiment);\\n        var entry = document.createElement('div');\\n        entry.className = \\\"entry\\\";\\n        entry.innerHTML =\\n          '<div class=\\\"time-marker\\\">' +\\n            '<div class=\\\"clock-time\\\">' + formatClock(d) + '</div>' +\\n            '<div class=\\\"rel\\\">' + relTime(item.t) + '</div>' +\\n          '</div>' +\\n          '<div class=\\\"dot\\\"></div>' +\\n          '<div class=\\\"content\\\">' +\\n            '<div class=\\\"sentiment ' + cls + '\\\"><span class=\\\"sw\\\"></span>' + sentimentLabel(item.sentiment) + '</div>' +\\n            '<p class=\\\"quote\\\">' + escapeHtml(item.customerMessage) + '</p>' +\\n            '<div class=\\\"reply\\\">' +\\n              '<div class=\\\"reply-label\\\">回覆內容</div>' +\\n              '<div class=\\\"reply-text\\\">' + escapeHtml(item.botResponse) + '</div>' +\\n            '</div>' +\\n            '<div class=\\\"userId\\\">賓客識別碼　' + escapeHtml(item.userId) + '</div>' +\\n          '</div>';\\n        ledger.appendChild(entry);\\n      });\\n    }\\n\\n    function tickClock(){\\n      var now = new Date();\\n      document.getElementById('nowClock').textContent = formatClock(now);\\n      document.getElementById('nowDate').textContent = now.toLocaleDateString('zh-TW', {year:'numeric', month:'2-digit', day:'2-digit'});\\n    }\\n\\n    render();\\n    tickClock();\\n    setInterval(tickClock, 1000);\\n    setInterval(render, 60000);\\n  </script>\\n</body>\\n</html>\\n\";\nvar html = template.replace(\"__DATA_PLACEHOLDER__\", encoded);\nreturn [{ json: { html: html } }];"
+      },
+      "id": "c03c5208-5d18-4daf-bed7-44e1b54c5901",
+      "name": "組成HTML頁面",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "id": "bb05fa2b-8fa3-4c40-a58f-acbed5656ec3",
+      "name": "回應網頁",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        672,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "取得客服對話紀錄",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "取得客服對話紀錄": {
+      "main": [
+        [
+          {
+            "node": "組成HTML頁面",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "組成HTML頁面": {
+      "main": [
+        [
+          {
+            "node": "回應網頁",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true
+  },
+  "versionId": "dd42d85b-af77-4841-98da-e85d057b66a5",
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
+  },
+  "nodeGroups": [],
+  "id": "0t2IWcHMGkrm3A8I",
+  "tags": []
+}
