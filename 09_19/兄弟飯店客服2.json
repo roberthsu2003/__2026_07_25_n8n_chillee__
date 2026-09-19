@@ -1,5 +1,4 @@
 {
-  "name": "兄弟飯店客服2",
   "nodes": [
     {
       "parameters": {
@@ -332,67 +331,311 @@
         1024,
         176
       ]
-    }
-  ],
-  "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n.roberthsu20030301.site",
-            "user-agent": "LineBotWebhook/2.0",
-            "content-length": "850",
-            "accept-encoding": "gzip, br",
-            "cdn-loop": "cloudflare; loops=1",
-            "cf-connecting-ip": "147.92.150.198",
-            "cf-ipcountry": "JP",
-            "cf-ray": "a3d50010da8bcd09-NRT",
-            "cf-visitor": "{\"scheme\":\"https\"}",
-            "cf-warp-tag-id": "7f3aa37c-438e-42c4-9ad9-a456f61b3dc7",
-            "connection": "keep-alive",
-            "content-type": "application/json; charset=utf-8",
-            "x-forwarded-for": "147.92.150.198",
-            "x-forwarded-proto": "https",
-            "x-line-signature": "Zo5rHcYE/NPFcq4jkfqiw8DTruCA7uwuy2uMJJPPEYk="
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "destination": "U881b8522859a69bb0889af6ac7fc42e4",
-            "events": [
-              {
-                "type": "message",
-                "message": {
-                  "type": "text",
-                  "id": "632420442367328598",
-                  "quoteToken": "EoYOpZLqTLYsoS_i-YQRsxd6Or2qvRFb_XhbEsfZfIFTZd3QOsznQfoGXCih7Y1s5xb3qb5CmekhLyaphDry9U1Nso-N_5L81QIRxBfV_ojI72wTQ3GlMqV3zFhtE8VHh2Zigj7OYPi4x-nQTcnKog",
-                  "markAsReadToken": "jE0XWXU-LPwXrksxqFJi0FkVMAn-jpdSlA4HIn7Ci8i_mc09ZLc2lhgA6i2MiNi_A40pyJ7z7ajnSWCpnXykrIj-r52OgZcfwG3f1tgOqNg81Qf4kIHRuxjDJMhxjr8BtiHA4UoFdPaJu026LRX-obcMoN08NpbiGr7627xMFrk9y4j_17JWnjLCAKv4I4PvxW40enoyrk-bFM4A3u5iuw",
-                  "text": "飯很好吃"
-                },
-                "webhookEventId": "01M2VPAHGP9P1A1KMXNT3XPRC1",
-                "deliveryContext": {
-                  "isRedelivery": false
-                },
-                "timestamp": 1789783262235,
-                "source": {
-                  "type": "group",
-                  "groupId": "C212aacf4552d39b3f0882d53e9204d3f",
-                  "userId": "U0b2c8c2e38246e614e35d4e9fb8d8e81"
-                },
-                "replyToken": "a85535fdda1b47f3b61500d57f9af1b1",
-                "mode": "active"
-              }
-            ]
-          },
-          "webhookUrl": "https://n8n.roberthsu20030301.site/webhook/line_bot1",
-          "executionMode": "production"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "timestamp",
+              "type": "string",
+              "value": "={{ $now.toISO() }}"
+            },
+            {
+              "id": "a2",
+              "name": "userId",
+              "type": "string",
+              "value": "={{ $('情緒分析').item.json.userId }}"
+            },
+            {
+              "id": "a3",
+              "name": "customerMessage",
+              "type": "string",
+              "value": "={{ $('情緒分析').item.json.messageText }}"
+            },
+            {
+              "id": "a4",
+              "name": "sentiment",
+              "type": "string",
+              "value": "={{ $('情緒分析').item.json.sentimentAnalysis.category }}"
+            },
+            {
+              "id": "a5",
+              "name": "botResponse",
+              "type": "string",
+              "value": "={{ $json.回應 }}"
+            }
+          ]
         },
-        "pairedItem": {
-          "item": 0
+        "options": {}
+      },
+      "id": "04d889a8-f2ca-452a-a26f-e569259924b9",
+      "name": "組合新記錄",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "=line記錄_{{ $now.setZone('Asia/Taipei').toFormat('yyyy_MM_dd') }}.xlsx",
+        "limit": 1,
+        "filter": {
+          "whatToSearch": "files",
+          "includeTrashed": false
+        },
+        "options": {
+          "fields": [
+            "id",
+            "name"
+          ]
+        }
+      },
+      "id": "ba2eb8ae-0ba7-4118-b733-bbf21edd9aff",
+      "name": "搜尋今日檔案",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1248,
+        560
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "7ntbC8wWeRks2qIv",
+          "name": "Google Drive account"
         }
       }
-    ]
-  },
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.id }}",
+              "operator": {
+                "operation": "notEmpty",
+                "singleValue": true,
+                "type": "string"
+              },
+              "rightValue": ""
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1086506e-1b25-4b23-a60e-a2744d8574aa",
+      "name": "檔案已存在?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1472,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "options": {}
+      },
+      "id": "16a23464-9d5f-4531-b7dc-a99fc718fd2f",
+      "name": "下載檔案",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1696,
+        464
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "7ntbC8wWeRks2qIv",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "id": "ab879a03-1cd5-4a5e-860f-251a7109e92f",
+      "name": "讀取xlsx",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        464
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json).filter(r => r && Object.keys(r).length > 0);\nconst n = $('組合新記錄').first().json;\nconst rec = {\n  timestamp: n.timestamp,\n  userId: n.userId,\n  customerMessage: n.customerMessage,\n  sentiment: n.sentiment,\n  botResponse: n.botResponse\n};\nreturn [...rows, rec].map(json => ({ json }));"
+      },
+      "id": "aa7ce66f-d468-4bf4-b9b1-8e4755f1e3f3",
+      "name": "合併記錄",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "=line記錄_{{ $now.setZone('Asia/Taipei').toFormat('yyyy_MM_dd') }}.xlsx"
+        }
+      },
+      "id": "c4538add-c4dc-4fcf-a60f-5da6ee2950a4",
+      "name": "轉成xlsx(更新)",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        2368,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('搜尋今日檔案').first().json.id }}"
+        },
+        "changeFileContent": true,
+        "options": {}
+      },
+      "id": "d8a91553-ecee-463c-9049-5c76fcb113c8",
+      "name": "更新Drive檔案",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2592,
+        464
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "7ntbC8wWeRks2qIv",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1",
+              "name": "timestamp",
+              "type": "string",
+              "value": "={{ $('組合新記錄').first().json.timestamp }}"
+            },
+            {
+              "id": "b2",
+              "name": "userId",
+              "type": "string",
+              "value": "={{ $('組合新記錄').first().json.userId }}"
+            },
+            {
+              "id": "b3",
+              "name": "customerMessage",
+              "type": "string",
+              "value": "={{ $('組合新記錄').first().json.customerMessage }}"
+            },
+            {
+              "id": "b4",
+              "name": "sentiment",
+              "type": "string",
+              "value": "={{ $('組合新記錄').first().json.sentiment }}"
+            },
+            {
+              "id": "b5",
+              "name": "botResponse",
+              "type": "string",
+              "value": "={{ $('組合新記錄').first().json.botResponse }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9d3b53bb-2d32-47b6-996b-51b10104b3bf",
+      "name": "新檔資料",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1696,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "=line記錄_{{ $now.setZone('Asia/Taipei').toFormat('yyyy_MM_dd') }}.xlsx"
+        }
+      },
+      "id": "972e16b2-053f-494c-923e-ea8df64519c3",
+      "name": "轉成xlsx(新檔)",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "name": "=line記錄_{{ $now.setZone('Asia/Taipei').toFormat('yyyy_MM_dd') }}.xlsx",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "root",
+          "mode": "list"
+        },
+        "options": {}
+      },
+      "id": "f5ae6610-4adf-4a42-84fb-e65eb8990b4c",
+      "name": "上傳新檔到Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2144,
+        704
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "7ntbC8wWeRks2qIv",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
   "connections": {
     "Webhook": {
       "main": [
@@ -496,6 +739,11 @@
             "node": "記錄對話",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "組合新記錄",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -525,24 +773,172 @@
           }
         ]
       ]
+    },
+    "組合新記錄": {
+      "main": [
+        [
+          {
+            "node": "搜尋今日檔案",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "搜尋今日檔案": {
+      "main": [
+        [
+          {
+            "node": "檔案已存在?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "檔案已存在?": {
+      "main": [
+        [
+          {
+            "node": "下載檔案",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "新檔資料",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "下載檔案": {
+      "main": [
+        [
+          {
+            "node": "讀取xlsx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "讀取xlsx": {
+      "main": [
+        [
+          {
+            "node": "合併記錄",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "合併記錄": {
+      "main": [
+        [
+          {
+            "node": "轉成xlsx(更新)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "轉成xlsx(更新)": {
+      "main": [
+        [
+          {
+            "node": "更新Drive檔案",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "新檔資料": {
+      "main": [
+        [
+          {
+            "node": "轉成xlsx(新檔)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "轉成xlsx(新檔)": {
+      "main": [
+        [
+          {
+            "node": "上傳新檔到Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
-  "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate",
-    "timeSavedMode": "fixed",
-    "callerPolicy": "workflowsFromSameOwner",
-    "availableInMCP": true
+  "pinData": {
+    "Webhook": [
+      {
+        "headers": {
+          "host": "n8n.roberthsu20030301.site",
+          "user-agent": "LineBotWebhook/2.0",
+          "content-length": "859",
+          "accept-encoding": "gzip, br",
+          "cdn-loop": "cloudflare; loops=1",
+          "cf-connecting-ip": "147.92.150.198",
+          "cf-ipcountry": "JP",
+          "cf-ray": "a3d663deecc5fd4e-NRT",
+          "cf-visitor": "{\"scheme\":\"https\"}",
+          "cf-warp-tag-id": "7f3aa37c-438e-42c4-9ad9-a456f61b3dc7",
+          "connection": "keep-alive",
+          "content-type": "application/json; charset=utf-8",
+          "x-forwarded-for": "147.92.150.198",
+          "x-forwarded-proto": "https",
+          "x-line-signature": "dQLHPnxxVD1I9RwNH0NPrqaT4CDk+o6OJegRkvezeZo="
+        },
+        "params": {},
+        "query": {},
+        "body": {
+          "destination": "U881b8522859a69bb0889af6ac7fc42e4",
+          "events": [
+            {
+              "type": "message",
+              "message": {
+                "type": "text",
+                "id": "632444893045981891",
+                "quoteToken": "7oAgEk5w8ijhDIqkW-cfv1bvZxWrIGk3uydxZmXVMk13mAQZG7ggezye66YYxAKGxG_pkrPRUg1V9Xyvx5HaPmJU_e4Vookl8twsugGqll7oNPy59snH_mwwERP61Oc2cnpNGavO0p3d32Ug17rEIQ",
+                "markAsReadToken": "C-8VeMQJ3tdPX_KYef1vzIGCTFWXlc17Ad1Cm9Xo4X8_abYGN63S074ZgInQkB1isZg3HldMUNt1v6vy6rCHOKu0jvHhBlz1DqIPcYjRzaXSqXsfag-cMX1IcqSoR1WsNf0Tm3xgou0TWOG2tiD9vmUBsTLfUbNaNUcYRlOpW9208h4kTxpmkpXEVv4WTX6C4UtVAIRLBdLAj8ZBFfFX3g",
+                "text": "櫃台小姐很美麗"
+              },
+              "webhookEventId": "01M2W479PPPTAHRFBH8D2G3S4W",
+              "deliveryContext": {
+                "isRedelivery": false
+              },
+              "timestamp": 1789797835995,
+              "source": {
+                "type": "group",
+                "groupId": "C212aacf4552d39b3f0882d53e9204d3f",
+                "userId": "U0b2c8c2e38246e614e35d4e9fb8d8e81"
+              },
+              "replyToken": "474d0b3cdd56478cb77bae40ac316337",
+              "mode": "active"
+            }
+          ]
+        },
+        "webhookUrl": "https://n8n.roberthsu20030301.site/webhook/line_bot1",
+        "executionMode": "production"
+      }
+    ]
   },
-  "versionId": "292eaf08-2a52-4d32-ac92-031547b5e2d0",
   "meta": {
     "aiBuilderAssisted": true,
     "builderVariant": "mcp",
     "templateCredsSetupCompleted": true,
     "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
-  },
-  "nodeGroups": [],
-  "id": "WAO9S4Gkv5VZKjWU",
-  "tags": []
+  }
 }
