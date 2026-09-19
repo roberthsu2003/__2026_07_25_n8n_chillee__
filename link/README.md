@@ -63,7 +63,7 @@ https://www.youtube.com/watch?v=8xdtb99feX8
 ---
 
 ## 2026_09_19_上午
-https://meet.google.com/kbm-qvgm-ikr
+https://www.youtube.com/watch?v=HiTHf-296Fw
 
 
 ---
