@@ -1,5 +1,4 @@
 {
-  "name": "基礎_Question_and_Answer_Chain",
   "nodes": [
     {
       "parameters": {},
@@ -19,7 +18,7 @@
             {
               "id": "field-question",
               "name": "user_question",
-              "value": "如果我的設備不小心潑到飲料受潮壞掉，原廠保固可以免費修嗎？如果不行的話基本檢測費是多少？",
+              "value": "Premium Cash Back Credit Card 的正卡與附卡年費是多少？什麼情況下第二年可以免年費？",
               "type": "string"
             }
           ]
@@ -63,17 +62,6 @@
       "name": "Vector Store Retriever"
     },
     {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
-      "typeVersion": 1,
-      "position": [
-        1008,
-        1008
-      ],
-      "id": "93f904ac-50da-4ee7-b102-e34fd71f6d2e",
-      "name": "In-Memory Vector Store"
-    },
-    {
       "parameters": {
         "jsonMode": "expressionData",
         "jsonData": "={{ $json.policy_text }}",
@@ -90,7 +78,7 @@
     },
     {
       "parameters": {
-        "chunkSize": 600,
+        "chunkSize": 300,
         "chunkOverlap": 100,
         "options": {}
       },
@@ -208,7 +196,8 @@
           "__rl": true,
           "mode": "list",
           "value": "vector_store_key"
-        }
+        },
+        "clearStore": true
       },
       "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
       "typeVersion": 1.3,
@@ -218,9 +207,25 @@
       ],
       "id": "7f26c591-31fb-453e-b141-db4b8faba46a",
       "name": "加入至向量資料庫"
+    },
+    {
+      "parameters": {
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        912,
+        1008
+      ],
+      "id": "8cad543d-0830-48e8-b623-16f8f20cd679",
+      "name": "取出向量資料"
     }
   ],
-  "pinData": {},
   "connections": {
     "執行工作流 (Manual Trigger)": {
       "main": [
@@ -266,17 +271,6 @@
         ]
       ]
     },
-    "In-Memory Vector Store": {
-      "ai_vectorStore": [
-        [
-          {
-            "node": "Vector Store Retriever",
-            "type": "ai_vectorStore",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "預載售後政策規章 (Default Data Loader)": {
       "ai_document": [
         [
@@ -303,12 +297,12 @@
       "ai_embedding": [
         [
           {
-            "node": "In-Memory Vector Store",
+            "node": "加入至向量資料庫",
             "type": "ai_embedding",
             "index": 0
           },
           {
-            "node": "加入至向量資料庫",
+            "node": "取出向量資料",
             "type": "ai_embedding",
             "index": 0
           }
@@ -339,20 +333,29 @@
     },
     "加入至向量資料庫": {
       "main": [
-        []
+        [
+          {
+            "node": "模擬顧客提問",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "取出向量資料": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
       ]
     }
   },
-  "active": false,
-  "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate"
-  },
-  "versionId": "d7b1f4a9-4b0f-46a2-b1eb-d6103fabb12e",
+  "pinData": {},
   "meta": {
     "instanceId": "b624619ee2ab76efdb50ec3d9db6d5a7b48a29e6e8549c3b681a12eab9e24201"
-  },
-  "nodeGroups": [],
-  "id": "DzaPuNAjVLw96Td1",
-  "tags": []
+  }
 }
